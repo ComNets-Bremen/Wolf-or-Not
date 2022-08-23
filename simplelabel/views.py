@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, FileResponse, Http404
 from django.urls import reverse
 
-from django.views.generic.edit import FormView
+from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -36,7 +36,7 @@ def get_image(request, uuid, max_size=400):
 
     return FileResponse(out)
 
-class UploadImagesView(LoginRequiredMixin, FormView):
+class UploadImagesView(LoginRequiredMixin, CreateView):
     form_class = FileFieldForm
     template_name = "simplelabel/upload.html"
     def get_success_url(self):
@@ -49,7 +49,7 @@ class UploadImagesView(LoginRequiredMixin, FormView):
             print(type(i), i.size)
             Image.objects.create(image=i, image_dataset=image_dataset).save()
 
-        return super().form_valid(form)
+        return super(UploadImagesView, self).form_valid(form)
 
 
 class PollImageView(FormView):

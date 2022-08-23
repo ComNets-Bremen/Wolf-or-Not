@@ -62,25 +62,97 @@
         white-space: nowrap;
         -webkit-overflow-scrolling: touch;
       }
+
+      
+    /* Sticky footer styles
+    -------------------------------------------------- */
+    html {
+      position: relative;
+      min-height: 100%;
+    }
+    body {
+      /* Margin bottom by footer height */
+      margin-bottom: 60px;
+    }
+    .footer {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      /* Set the fixed height of the footer here */
+      height: 60px;
+      line-height: 60px; /* Vertically center the text there */
+      background-color: #f5f5f5;
+    }
+
+
+    /* Custom page CSS
+    -------------------------------------------------- */
+    /* Not required for template or sticky footer method. */
+
+    body > .container {
+      padding: 60px 15px 0;
+    }
+
+    .footer > .container {
+      padding-right: 15px;
+      padding-left: 15px;
+    }
+
+    code {
+      font-size: 80%;
+    }
     </style>
 
 
   </head>
-  <body class="text-center">
+  <body>
 
-<main>
+<main role="main">
 
-    <div class="p-5 mb-4 bg-light rounded-3">
+    <div class="p-5 mb-4 bg-light rounded-3 text-center">
       <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">Welcome to Wolf or Not</h1>
-        <p class="col">This webpage will show images. Some of them contain a wolf, some do not. Try to push the according button under the images.</p>
+        <p class="col">This webpage will show images. Some of them contain a wolf, some do not. Push the according button under the images.</p>
         <a class="btn btn-primary btn-lg"href="{% url 'poll' %}">Start helping</a>
 
       </div>
     </div>
 
-</main>
+    <div class="container">
+        <h3 class="display-6 fw-bold">What shall I do?</h1>
+        <p class="col">You will see an image as follows:</p>
 
+        <div class="col">
+            <img src="{% static "/img/example-image.jpg" %}" class="d-block mx-lg-auto img-fluid" alt="Example image showing the parts of the webpage." loading="lazy">
+        </div>
+        <p class="col">
+        You see three areas:
+        </p>
+        <ol class="list-group">
+            <li>The image to be analyzed.</li>
+            <li>Some properties like for example the following:
+                <ul>
+                    <li><b>Multiple Classes</b>: Are several classes visible? This could be a dog and a human. Please check this box and select the class which is more dominant in the image.</li>
+                    <li><b>Hard to see</b>: Is the class hard to see like the object / class is hidden behind a tree.</li>
+                    <li><b>Multiple instance</b>s: Are multiple instances visible? I.e. several wolves or several humans?</li>
+                </ul>
+            </li>
+            <li>The class selection area: Hit the button representing the most dominant class in this image. After clicking the button, the next image will be loaded.</li>
+        </ol>
+        <a class="btn btn-primary btn-lg"href="{% url 'poll' %}">Start helping</a>
+    </div>
+
+
+
+</main>
+<footer class="footer">
+      <div class="container text-center">
+          <span class="text-muted">
+              This service is provided by <a href="https://comnets.uni-bremen.de" target="_blank">ComNets Bremen</a>&nbsp; &middot; &nbsp;
+              <a href="https://www.uni-bremen.de/impressum" target="_blank">Impressum</a>
+          </span>
+      </div>
+    </footer>
 
   </body>
 </html>
