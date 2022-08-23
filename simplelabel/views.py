@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, FileResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, FileResponse, Http404
 from django.urls import reverse
 
 from django.views.generic.edit import FormView
@@ -60,6 +60,8 @@ class PollImageView(FormView):
         context = super().get_context_data(**kwargs)
 
         pks = Image.objects.values_list('pk', flat=True)
+        if len(pks) == 0:
+            raise Http404("No polls available yet. Please return later")
         random_pk = random.choice(pks)
         random_img = Image.objects.get(pk=random_pk)
 
