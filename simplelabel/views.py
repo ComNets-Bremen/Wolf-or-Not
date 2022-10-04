@@ -39,7 +39,12 @@ def get_statistics(request):
     frequencies.sort(key = lambda x : x[1], reverse=False)
     freq_list_dict = []
 
+    sufficient_polls_3 = 0
+
     for f in frequencies:
+        # count number of images with at least 3 polls
+        if f[0] >= 3:
+            sufficient_polls_3 += f[1]
         freq_list_dict.append({
                 "number_polls" : f[0],
                 "number_images" : f[1],
@@ -55,6 +60,7 @@ def get_statistics(request):
             "median_count_image" : np.median(values),
             "frequencies" : frequencies,
             "freq_list_dict" : freq_list_dict,
+            "percent_done_3" : round(sufficient_polls_3/len(p)*100,2),
             }
 
 
