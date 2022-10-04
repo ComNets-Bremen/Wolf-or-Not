@@ -1,0 +1,39 @@
+{% load static %}
+{% load attr_extras %}
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <title>{% block title %}Wolf or Not {% endblock %}</title>
+
+
+    <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
+    <link href="{% static "custom/styles.css" %}" rel="stylesheet">
+    <script defer src="{% static "fontawesome/js/brands.js" %}"></script>
+    <script defer src="{% static "fontawesome/js/solid.js" %}"></script>
+    <script defer src="{% static "fontawesome/js/fontawesome.js" %}"></script>
+  </head>
+  <body>
+
+<main role="main">
+    {% block main %}{% endblock %}
+</main>
+<footer class="footer">
+      <div class="container text-center">
+          <span class="text-muted">
+              This service is provided by <a href="https://comnets.uni-bremen.de" target="_blank">
+ ComNets Bremen <i class="fa-solid fa-globe"></i></a>
+              <a href="https://comnets-bremen.github.io/" target="_blank"><i class="fa-brands fa-github"></i></a>
+                <a href="https://twitter.com/ComNetsBremen" target="_blank"><i class="fa-brands fa-twitter"></i></a>
+                <a href="https://www.youtube.com/comnetsbremen" target="_blank"><i class="fa-brands fa-youtube"></i></a>&nbsp;·
+
+                <a href="{% url "index" %}">Start</a>·
+                <a href="https://www.uni-bremen.de/impressum" target="_blank">Impressum</a>
+          </span>
+      </div>
+    </footer>
+
+  </body>
+</html>
