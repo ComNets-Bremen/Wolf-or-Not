@@ -127,10 +127,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = '/static/'
 
-STATIC_ROOT=os.path.join(BASE_DIR, "static") # your static/ files folder
+if not DEBUG:
+    STATIC_ROOT=os.path.join(BASE_DIR, "static") # your static/ files folder
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"), # your static/ files folder
+]
 MEDIA_ROOT=BASE_DIR
 
 
@@ -146,6 +150,9 @@ try:
 except ImportError as e:
     pass
 
+
+if DEBUG:
+    print("Running in debug mode")
 
 # At least the following variables should be set in the settings_local.py.
 # Give a meaningful error if they are missing
