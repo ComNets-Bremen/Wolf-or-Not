@@ -6,6 +6,10 @@ from django.views.generic.edit import FormView, CreateView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from django.db.models import Count
+
+from collections import Counter
+
 import random
 from uuid import UUID
 
@@ -16,6 +20,8 @@ from .forms import FileFieldForm, PollForm
 
 from .models import Image, Dataset, Class, Poll
 
+import numpy as np
+
 
 def index(request):
     return render(request, 'simplelabel/index.html')
@@ -23,6 +29,36 @@ def index(request):
 ## Redirect app from / to here
 def redirect_to_here(request):
     return HttpResponseRedirect(reverse("index"))
+
+def get_statistics(request):
+    p = Image.objects.all().annotate(num_polls=Count("poll", distinct=True)).order_by("-num_polls").values_list("num_polls", "image_uuid")
+
+    values = [i[0] for i in p]
+
+    frequencies = Counter(values).most_common()
+    frequencies.sort(key = lambda x : x[1], reverse=False)
+    freq_list_dict = []
+
+    for f in frequencies:
+        freq_list_dict.append({
+                "number_polls" : f[0],
+                "number_images" : f[1],
+                "percentage_images" : round(f[1] / len(p) * 100.0, 1),
+                })
+
+    data = {
+            "image_count" : Image.objects.count(),
+            "poll_count" : Poll.objects.count(),
+            "mean_count_image" : np.mean(values),
+            "max_count_image" : np.max(values),
+            "min_count_image" : np.min(values),
+            "median_count_image" : np.median(values),
+            "frequencies" : frequencies,
+            "freq_list_dict" : freq_list_dict,
+            }
+
+
+    return HttpResponse(str(data))
 
 
 def get_image(request, uuid, max_size=400):
