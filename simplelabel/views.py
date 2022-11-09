@@ -51,6 +51,8 @@ def get_statistics(request):
                 "percentage_images" : round(f[1] / len(p) * 100.0, 2),
                 })
 
+    freq_list_dict = sorted(freq_list_dict, key=lambda d: d["number_polls"])
+
     data = {
             "image_count" : Image.objects.count(),
             "poll_count" : Poll.objects.count(),
