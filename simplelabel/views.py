@@ -48,7 +48,7 @@ def get_statistics(request):
         freq_list_dict.append({
                 "number_polls" : f[0],
                 "number_images" : f[1],
-                "percentage_images" : round(f[1] / len(p) * 100.0, 1),
+                "percentage_images" : round(f[1] / len(p) * 100.0, 2),
                 })
 
     data = {
@@ -64,7 +64,7 @@ def get_statistics(request):
             }
 
 
-    return HttpResponse(str(data))
+    return render(request, 'simplelabel/statistics.html', data)
 
 
 def get_image(request, uuid, max_size=400):

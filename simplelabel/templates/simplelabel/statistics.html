@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load attr_extras %}
+
+
+{% block main %}
+    <div class="p-5 mb-4 bg-light rounded-3 text-center">
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Statistics</h1>
+        <p class="col">This webpages gives a basic overview of the current status of the project.</p>
+
+      </div>
+    </div>
+
+    <div class="container">
+        <h2 class="display-7 fw-bold">General Statistics</h2>
+        <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Key</th>
+      <th scope="col">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Number of images in database</td>
+      <td>{{ image_count }}</td>
+    </tr>
+    <tr>
+      <td>Number of polls in database</td>
+      <td>{{ poll_count }}</td>
+    </tr>
+    <tr>
+      <td >Mean number of polls per Image</td>
+      <td>{{ mean_count_image }}</td>
+    </tr>
+    <tr>
+      <td >Min number of polls per Image</td>
+      <td>{{ min_count_image }}</td>
+    </tr>
+    <tr>
+      <td >Max number of polls per Image</td>
+      <td>{{ max_count_image }}</td>
+    </tr>
+    <tr>
+      <td >Percentage of images with at least three polls</td>
+      <td>{{ percent_done_3 }}&percnt;</td>
+    </tr>
+
+  </tbody>
+</table>
+    </div>
+
+
+    <div class="container">
+        <h2 class="display-7 fw-bold">Frequencies</h2>
+        <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Frequency</th>
+      <th scope="col">Count</th>
+      <th scope="col">Percentage</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for entry in freq_list_dict %}
+    <tr>
+        <td>{{ entry.number_polls }}</td>
+      <td>{{ entry.number_images }}</td>
+      <td>{{ entry.percentage_images}}&percnt;</td>
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+    </div>
+
+
+{% endblock %}
