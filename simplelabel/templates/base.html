@@ -14,27 +14,64 @@
     <script defer src="{% static "fontawesome/js/brands.js" %}"></script>
     <script defer src="{% static "fontawesome/js/solid.js" %}"></script>
     <script defer src="{% static "fontawesome/js/fontawesome.js" %}"></script>
+    <link rel="icon" type="image/png" sizes="32x32" href="{% static "img/favicon/favicon-32x32.png" %}">
+    <link rel="icon" type="image/png" sizes="16x16" href="{% static "img/favicon/favicon-16x16.png" %}">
+    <link rel="apple-touch-icon" sizes="180x180" href="{% static "img/favicon/favicon-180x180.png" %}">
   </head>
   <body>
+
+
+<nav class="navbar fixed-top navbar-expand-lg container navbar-light bg-light">
+  <a class="navbar-brand" href="#">
+      <img src="{% static "img/logo-30x30.png" %}" width="30" height="30" class="d-inline-block align-top" alt="">
+    Wolf or not
+  </a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+
+
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+          <a class="nav-link" href="{% url "index" %}">Home</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="https://www.uni-bremen.de/impressum">Impressum</a>
+      </li>
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Admin
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+            <a class="dropdown-item" href="{% url "admin:index" %}">Admin</a>
+            <a class="dropdown-item" href="{% url "get_statistics" %}">Statistics</a>
+        </div>
+
+      </li>
+    </ul>
+    </div>
+</nav>
+
 
 <main role="main">
     {% block main %}{% endblock %}
 </main>
-<footer class="footer">
+<footer class="footer bg-light">
       <div class="container text-center">
           <span class="text-muted">
               This service is provided by <a href="https://comnets.uni-bremen.de" target="_blank">
  ComNets Bremen <i class="fa-solid fa-globe"></i></a>
               <a href="https://comnets-bremen.github.io/" target="_blank"><i class="fa-brands fa-github"></i></a>
                 <a href="https://twitter.com/ComNetsBremen" target="_blank"><i class="fa-brands fa-twitter"></i></a>
-                <a href="https://www.youtube.com/comnetsbremen" target="_blank"><i class="fa-brands fa-youtube"></i></a>&nbsp;·
-
-                <a href="{% url "index" %}">Start</a>·
-                <a href="{% url "get_statistics" %}">Status</a>·
-                <a href="https://www.uni-bremen.de/impressum" target="_blank">Impressum</a>
+                <a href="https://www.youtube.com/comnetsbremen" target="_blank"><i class="fa-brands fa-youtube"></i></a>
           </span>
       </div>
     </footer>
+
+<script src="{% static "js/jquery-3.6.1.min.js" %}"></script>
+<script src="{% static "js/popper.min.js" %}"></script>
+<script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
 
   </body>
 </html>
