@@ -56,7 +56,7 @@ def get_statistics(request):
     data = {
             "image_count" : Image.objects.count(),
             "poll_count" : Poll.objects.count(),
-            "mean_count_image" : np.mean(values),
+            "mean_count_image" : round(np.mean(values),2),
             "max_count_image" : np.max(values),
             "min_count_image" : np.min(values),
             "median_count_image" : np.median(values),
