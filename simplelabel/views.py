@@ -1,4 +1,4 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, FileResponse, Http404
 from django.urls import reverse
 
@@ -16,12 +16,13 @@ from uuid import UUID
 from PIL import Image as PI
 from io import BytesIO
 
-from .forms import FileFieldForm, PollForm
+from .forms import FileFieldForm, PollForm, DownloadForm
 
-from .models import Image, Dataset, Class, Poll
+from .models import Image, Dataset, Class, Property, Poll
 
 import numpy as np
 
+import datetime
 
 def index(request):
     return render(request, 'simplelabel/index.html')
@@ -68,7 +69,9 @@ def get_statistics(request):
 
     return render(request, 'simplelabel/statistics.html', data)
 
-
+"""
+Show the requested image and make sure it is something which can be shown in the Webbrowser
+"""
 def get_image(request, uuid, max_size=400):
     image = get_object_or_404(Image, image_uuid=uuid).image
     im = PI.open(image)
@@ -76,13 +79,15 @@ def get_image(request, uuid, max_size=400):
     si.thumbnail((max_size, max_size))
     out = BytesIO()
     si.save(out, format="JPEG")
+    im.close()
     out.seek(0)
 
-    return FileResponse(out)
+    return FileResponse(out, content_type="image/jpeg")
 
 class UploadImagesView(LoginRequiredMixin, CreateView):
     form_class = FileFieldForm
     template_name = "simplelabel/upload.html"
+
     def get_success_url(self):
         return reverse('upload_images')
 
@@ -93,7 +98,8 @@ class UploadImagesView(LoginRequiredMixin, CreateView):
             print(type(i), i.size)
             Image.objects.create(image=i, image_dataset=image_dataset).save()
 
-        return super(UploadImagesView, self).form_valid(form)
+        #return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class PollImageView(FormView):
@@ -144,3 +150,58 @@ class PollImageView(FormView):
         p.save()
         return super().form_valid(form)
 
+"""
+Download the wolf images
+
+TODO: A lot of optimization...
+"""
+class DownloadView(FormView):
+    form_class = DownloadForm
+    template_name = "simplelabel/download.html"
+
+    def get_success_url(self):
+        return reverse('download_results')
+
+    def form_valid(self, form):
+        datasets = get_list_or_404(Dataset, id__in=form.cleaned_data["datasets"])
+        min_num_polls = form.cleaned_data["num_polls"]
+
+        related_images = Image.objects.all().annotate(num_polls=Count("poll", distinct=True)).filter(num_polls__gte=min_num_polls, image_dataset__in=datasets)
+        related_polls = Poll.objects.filter(poll_image__in=related_images)
+
+        classes = { cls[0]: (cls[1], cls[2]) for cls in Class.objects.all().values_list('id', 'class_name', 'class_id')}
+        properties = { prop[0]: prop[1] for prop in Property.objects.all().values_list('id', 'property_name')}
+
+        server = self.request.get_host()
+
+        ret = {}
+        ret["export_datetime"] = datetime.datetime.now()
+        ret["export_server"] = server
+        ret["images"] = []
+        ret["classes"] = [{"class_name" : cls[0], "class_id" : cls[1]} for cls in Class.objects.all().values_list('class_name', 'class_id')]
+        ret["properties"] = [p[0] for p in Property.objects.all().values_list('property_name')]
+        print(ret["properties"])
+
+        for image in related_images:
+            img = {}
+            img["image_name"]    = image.get_filename()
+            img["image_uuid"]    = image.image_uuid
+            img["image_url"]     = server + image.get_image_url()
+            img["image_dataset"] = image.image_dataset.dataset_name
+            img["polls"] = []
+            num_class_ids = []
+            for poll in Poll.objects.filter(poll_image=image).prefetch_related('poll_class', 'poll_property'):
+                d = {}
+                cls = poll.poll_class.all()[0]
+                d["class"] = cls.class_name
+                d["class_id"] = cls.class_id
+                num_class_ids.append(cls.class_id)
+                d["properties"] = [p.property_name for p in poll.poll_property.all()]
+                img["polls"].append(d)
+
+            class_id_counts = {ids:num_class_ids.count(ids)/len(num_class_ids) for ids in num_class_ids}
+            img["relative_class_voting"] = class_id_counts
+
+            ret["images"].append(img)
+
+        return JsonResponse(ret)
