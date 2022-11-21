@@ -31,6 +31,10 @@ def index(request):
 def redirect_to_here(request):
     return HttpResponseRedirect(reverse("index"))
 
+
+"""
+Show some simple statistics of the data currently being labeled
+"""
 def get_statistics(request):
     p = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll", distinct=True)).order_by("-num_polls").values_list("num_polls", "image_uuid")
 
@@ -69,6 +73,7 @@ def get_statistics(request):
 
     return render(request, 'simplelabel/statistics.html', data)
 
+
 """
 Show the requested image and make sure it is something which can be shown in the Webbrowser
 """
@@ -84,6 +89,9 @@ def get_image(request, uuid, max_size=400):
 
     return FileResponse(out, content_type="image/jpeg")
 
+"""
+View to upload additional images
+"""
 class UploadImagesView(LoginRequiredMixin, CreateView):
     form_class = FileFieldForm
     template_name = "simplelabel/upload.html"
@@ -102,6 +110,10 @@ class UploadImagesView(LoginRequiredMixin, CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
+"""
+The poll view: Get a random image, show it and store the poll results to the
+database.
+"""
 class PollImageView(FormView):
     form_class = PollForm
     template_name = "simplelabel/poll.html"
@@ -180,7 +192,6 @@ class DownloadView(LoginRequiredMixin, FormView):
         ret["images"] = []
         ret["classes"] = [{"class_name" : cls[0], "class_id" : cls[1]} for cls in Class.objects.all().values_list('class_name', 'class_id')]
         ret["properties"] = [p[0] for p in Property.objects.all().values_list('property_name')]
-        print(ret["properties"])
 
         for image in related_images:
             img = {}
@@ -205,3 +216,4 @@ class DownloadView(LoginRequiredMixin, FormView):
             ret["images"].append(img)
 
         return JsonResponse(ret)
+
