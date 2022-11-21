@@ -109,7 +109,7 @@ class PollImageView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        pks = Image.objects.values_list('pk', flat=True)
+        pks = Image.objects.filter(image_dataset__dataset_active=True).values_list('pk', flat=True)
         if len(pks) == 0:
             raise Http404("No polls available yet. Please return later")
         random_pk = random.choice(pks)

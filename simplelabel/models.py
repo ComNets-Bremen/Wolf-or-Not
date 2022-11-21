@@ -26,9 +26,10 @@ class Property(models.Model):
 
 class Dataset(models.Model):
     dataset_name        = models.CharField(max_length=100, unique=True)
+    dataset_active      = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.dataset_name
+        return self.dataset_name + " " + (u"✓" if self.dataset_active else u"✗")
 
 class Image(models.Model):
     image = models.ImageField(
