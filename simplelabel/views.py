@@ -155,7 +155,7 @@ Download the wolf images
 
 TODO: A lot of optimization...
 """
-class DownloadView(FormView):
+class DownloadView(LoginRequiredMixin, FormView):
     form_class = DownloadForm
     template_name = "simplelabel/download.html"
 
