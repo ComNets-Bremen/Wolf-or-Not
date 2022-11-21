@@ -32,7 +32,7 @@ def redirect_to_here(request):
     return HttpResponseRedirect(reverse("index"))
 
 def get_statistics(request):
-    p = Image.objects.all().annotate(num_polls=Count("poll", distinct=True)).order_by("-num_polls").values_list("num_polls", "image_uuid")
+    p = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll", distinct=True)).order_by("-num_polls").values_list("num_polls", "image_uuid")
 
     values = [i[0] for i in p]
 
@@ -55,15 +55,15 @@ def get_statistics(request):
     freq_list_dict = sorted(freq_list_dict, key=lambda d: d["number_polls"])
 
     data = {
-            "image_count" : Image.objects.count(),
-            "poll_count" : Poll.objects.count(),
-            "mean_count_image" : round(np.mean(values),2),
-            "max_count_image" : np.max(values),
-            "min_count_image" : np.min(values),
-            "median_count_image" : np.median(values),
+            "image_count" : Image.objects.filter(image_dataset__dataset_active=True).count(),
+            "poll_count" : Poll.objects.filter(poll_image__image_dataset__dataset_active=True).count(),
+            "mean_count_image" : round(np.mean(values),2) if len(values) else 0,
+            "max_count_image" : np.max(values) if len(values) else 0,
+            "min_count_image" : np.min(values) if len(values) else 0,
+            "median_count_image" : np.median(values) if len(values) else 0,
             "frequencies" : frequencies,
             "freq_list_dict" : freq_list_dict,
-            "percent_done_3" : round(sufficient_polls_3/len(p)*100,2),
+            "percent_done_3" : round(sufficient_polls_3/len(p)*100,2) if len(p) else 0,
             }
 
 
