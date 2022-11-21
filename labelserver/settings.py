@@ -123,6 +123,11 @@ USE_L10N = True
 
 USE_TZ = True
 
+FILE_UPLOAD_HANDLERS = [
+        "django.core.files.uploadhandler.TemporaryFileUploadHandler",
+                        ]
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240 # higher than the count of fields
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
@@ -136,7 +141,6 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"), # your static/ files folder
 ]
 MEDIA_ROOT=BASE_DIR
-
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
