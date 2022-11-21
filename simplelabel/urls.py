@@ -8,6 +8,7 @@ urlpatterns = [
     path('poll', views.PollImageView.as_view(), name='poll'),
     path('upload', views.UploadImagesView.as_view(), name='upload_images'),
     path('statistics', views.get_statistics, name="get_statistics"),
+    path('download', views.DownloadView.as_view(), name='download_results'),
 ]
 
 

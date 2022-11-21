@@ -53,6 +53,7 @@
                 <a class="dropdown-item" href="{% url "admin:index" %}">Admin overview</a>
                 <a class="dropdown-item" href="{% url "admin:logout" %}">Logout</a>
                 <a class="dropdown-item" href="{% url "upload_images" %}">Upload images </a>
+                <a class="dropdown-item" href="{% url "download_results" %}">Download results </a>
             {% else %}
                 <a class="dropdown-item" href="{% url "admin:login" %}">Login</a>
             {% endif %}
