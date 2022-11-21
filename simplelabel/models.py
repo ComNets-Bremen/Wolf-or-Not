@@ -46,6 +46,9 @@ class Image(models.Model):
     def get_image_url(self):
         return reverse("get_image", kwargs={"uuid" : self.image_uuid})
 
+    def get_filename(self):
+        return os.path.basename(self.image.name)
+
 
 class Poll(models.Model):
     poll_date = models.DateTimeField(auto_now_add=True, blank=True)
