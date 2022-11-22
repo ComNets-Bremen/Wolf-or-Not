@@ -257,9 +257,12 @@ for frame_n, image in enumerate(args["images"]):
             y_max = img.shape[0]
 
         cut_image = img[y_min:y_max, x_min:x_max]
+        mid_text = "_cut_squared_"
         if cut_image.shape[0] != cut_image.shape[1]:
             print("Image not square!", cut_image.shape[0:2])
-        filename = os.path.join(outdir, image_name[0]+"_cut_squared_"+str(bb_i+1)+"."+image_name[1])
+            mid_text = "_cut_"
+
+        filename = os.path.join(outdir, image_name[0]+mid_text+str(bb_i+1)+"."+image_name[1])
         cv2.imwrite(filename, cut_image)
         print("Created new subimage", filename)
 
