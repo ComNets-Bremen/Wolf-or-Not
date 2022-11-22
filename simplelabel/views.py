@@ -14,6 +14,8 @@ import random
 from uuid import UUID
 
 from PIL import Image as PI
+from PIL import ImageOps as PIO
+
 from io import BytesIO
 
 from .forms import FileFieldForm, PollForm, DownloadForm
@@ -77,11 +79,15 @@ def get_statistics(request):
 """
 Show the requested image and make sure it is something which can be shown in the Webbrowser
 """
-def get_image(request, uuid, max_size=400):
+def get_image(request, uuid, max_size=400, only_downscale=False):
     image = get_object_or_404(Image, image_uuid=uuid).image
     im = PI.open(image)
     si = im.convert("RGB")
-    si.thumbnail((max_size, max_size))
+    if max_size:
+        if only_downscale:
+            si.thumbnail((max_size, max_size))
+        else:
+            si = PIO.contain(si, (max_size, max_size))
     out = BytesIO()
     si.save(out, format="JPEG")
     im.close()
