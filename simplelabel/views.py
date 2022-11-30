@@ -221,5 +221,7 @@ class DownloadView(LoginRequiredMixin, FormView):
 
             ret["images"].append(img)
 
-        return JsonResponse(ret)
+        response = JsonResponse(ret)
+        response['Content-Disposition'] = 'attachment; filename=export.json'
+        return response
 
