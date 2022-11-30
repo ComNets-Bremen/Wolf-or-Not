@@ -166,7 +166,8 @@ def get_avg_image(images, video=False, percentage=20):
         number = int(len(images)*percentage/100.0)
         number = max(number, 1) # make sure we have at least one image. TODO: Check / assume a minimum number of images.
         subset = random.sample(images, number)
-        img = [cv2.imread(s, 1) for s in subset]
+        img_sub = [cv2.imread(s, 1) for s in subset]
+        img = [i for i in img_sub if i is not None] # Make sure all windows can be opened
 
     img = np.mean(img, axis=0)
     return img.astype("uint8")
@@ -182,6 +183,11 @@ for frame_n, image in enumerate(args["images"]):
     image_name = (".".join(image_name[:-1]), ".".join(image_name[-1:]))
 
     img = cv2.imread(image)
+
+    if img is None:
+        print(image, "is no valid image. Skipping")
+        continue
+
     # Relative min area, smaller areas are ignored
     min_area = int(img.shape[0] * img.shape[1] * args["min_area"])
 
@@ -211,6 +217,7 @@ for frame_n, image in enumerate(args["images"]):
 
     if len(cnts) == 0:
         # No contours found. Next image
+        print("No contours found in image", image)
         continue
 
     (cnts, boundingBoxes) = contours.sort_contours(cnts)
@@ -232,6 +239,7 @@ for frame_n, image in enumerate(args["images"]):
         cv2.rectangle(annotated_2, (x, y), (x+w, y+h), (0, 0, 255), 2)
         #print(x,y,w,h)
         if w < 100:
+            print("Ignoring too small box in image", image)
             # Ignore too small images
             continue
         # Shift image if required
