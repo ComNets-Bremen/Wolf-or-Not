@@ -39,6 +39,7 @@ import os, sys
 from pathlib import Path
 import numpy as np
 import random
+import logging
 
 REFRESH_REFERENCE_FRAMES = 10
 
@@ -48,7 +49,12 @@ ap.add_argument("-o", "--out", type=str, default="out", help="The data output di
 ap.add_argument("images", nargs="+", help="The series of images")
 ap.add_argument("-v", "--video", default=False, action='store_true', help="Input file is a video")
 ap.add_argument("-x", "--extra", default=False, action='store_true', help="save intermediate images")
+ap.add_argument("-d", "--debug", help="Enable debug messages", action="store_true")
 args = vars(ap.parse_args())
+
+if args["debug"]:
+    logging.basicConfig(level=logging.DEBUG)
+    logging.debug("Set logging level to DEBUG")
 
 
 outdir = args["out"]
@@ -185,7 +191,7 @@ for frame_n, image in enumerate(args["images"]):
     img = cv2.imread(image)
 
     if img is None:
-        print(image, "is no valid image. Skipping")
+        logging.warning(str(image) + " is not a valid image. Skipping")
         continue
 
     # Relative min area, smaller areas are ignored
@@ -217,7 +223,7 @@ for frame_n, image in enumerate(args["images"]):
 
     if len(cnts) == 0:
         # No contours found. Next image
-        print("No contours found in image", image)
+        logging.info("No contours found in image " + str(image))
         continue
 
     (cnts, boundingBoxes) = contours.sort_contours(cnts)
@@ -239,7 +245,7 @@ for frame_n, image in enumerate(args["images"]):
         cv2.rectangle(annotated_2, (x, y), (x+w, y+h), (0, 0, 255), 2)
         #print(x,y,w,h)
         if w < 100:
-            print("Ignoring too small box in image", image)
+            logging.info("Ignoring too small box in image " + str(image))
             # Ignore too small images
             continue
         # Shift image if required
@@ -267,12 +273,12 @@ for frame_n, image in enumerate(args["images"]):
         cut_image = img[y_min:y_max, x_min:x_max]
         mid_text = "_cut_squared_"
         if cut_image.shape[0] != cut_image.shape[1]:
-            print("Image not square!", cut_image.shape[0:2])
+            logging.warning("Image not square! " + str(cut_image.shape[0:2]))
             mid_text = "_cut_"
 
         filename = os.path.join(outdir, image_name[0]+mid_text+str(bb_i+1)+"."+image_name[1])
         cv2.imwrite(filename, cut_image)
-        print("Created new subimage", filename)
+        logging.debug("Created new subimage " + str(filename))
 
 
 
