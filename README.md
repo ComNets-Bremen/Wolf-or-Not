@@ -36,6 +36,16 @@ with some potential security considerations:
 - Maybe running the system on an isolated server is a good idea?
 - Anyhow, we will not take any responsibility for the code and the project.
 
+Downloading images
+==================
+
+The original images can be downloaded using a separate URL by either
+authenticated users (in the browser) or via a call with an authentication token:
+
+`curl https://<server-address>/simplelabel/original-img/<image_UUID>/ -H 'Authorization: Token aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee'`
+
+The token has to be configured using the API model.
+
 Publications
 ============
 

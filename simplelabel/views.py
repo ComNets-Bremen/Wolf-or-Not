@@ -20,11 +20,14 @@ from io import BytesIO
 
 from .forms import FileFieldForm, PollForm, DownloadForm
 
-from .models import Image, Dataset, Class, Property, Poll
+from .models import Image, Dataset, Class, Property, Poll, ApiKey
 
 import numpy as np
 
 import datetime
+
+
+MAX_STANDARD_IMG_SIZE = 400
 
 def index(request):
     return render(request, 'simplelabel/index.html')
@@ -79,8 +82,31 @@ def get_statistics(request):
 """
 Show the requested image and make sure it is something which can be shown in the Webbrowser
 """
-def get_image(request, uuid, max_size=400, only_downscale=False):
+def get_image(request, uuid, max_size=MAX_STANDARD_IMG_SIZE, only_downscale=False):
     image = get_object_or_404(Image, image_uuid=uuid).image
+
+    authenticated = request.user.is_authenticated
+
+    if not authenticated and "HTTP_AUTHORIZATION" in request.META:
+        auth_header = request.META["HTTP_AUTHORIZATION"].split()
+        if len(auth_header) == 2 and auth_header[0] == "Token":
+            key = auth_header[1]
+            print("Checking key:", key)
+            try:
+                key = UUID(key, version=4)
+            except ValueError:
+                print("Not a valid token")
+                key = None
+
+            if key and ApiKey.objects.filter(api_key=key).count():
+                print("Valid token")
+                authenticated = True
+        else:
+            print("Not a valid header:", auth_header)
+
+    if not authenticated and (max_size is None or max_size > MAX_STANDARD_IMG_SIZE):
+        max_size=MAX_STANDARD_IMG_SIZE
+
     im = PI.open(image)
     si = im.convert("RGB")
     if max_size:

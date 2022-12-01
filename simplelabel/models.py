@@ -61,6 +61,16 @@ class Poll(models.Model):
     def __str__(self):
         return "Poll on image " + str(self.poll_image)
 
+# API Keys for direct data access
+
+class ApiKey(models.Model):
+    api_key_name  = models.CharField(max_length=100, unique=True)
+    api_key       = models.UUIDField(primary_key=True, default=uuid.uuid4)
+    api_key_level = models.IntegerField(default=0)
+
+    def __str__(self):
+        return str(self.api_key_name)
+
 
 # Receiver functions
 

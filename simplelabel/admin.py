@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Class, Property, Dataset, Image, Poll
+from .models import Class, Property, Dataset, Image, Poll, ApiKey
 
 @admin.register(Class)
 class ClassAdmin(admin.ModelAdmin):
@@ -24,3 +24,8 @@ class DatasetAdmin(admin.ModelAdmin):
 @admin.register(Poll)
 class PollAdmin(admin.ModelAdmin):
     readonly_fields = ("poll_date",)
+
+
+@admin.register(ApiKey)
+class ApiKeyAdmin(admin.ModelAdmin):
+    pass
