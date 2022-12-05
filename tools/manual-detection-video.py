@@ -40,6 +40,7 @@ from pathlib import Path
 import numpy as np
 import random
 import logging
+import csv
 
 REFRESH_REFERENCE_FRAMES = 10
 
@@ -50,15 +51,55 @@ ap.add_argument("images", nargs="+", help="The series of images")
 ap.add_argument("-v", "--video", default=False, action='store_true', help="Input file is a video")
 ap.add_argument("-x", "--extra", default=False, action='store_true', help="save intermediate images")
 ap.add_argument("-d", "--debug", help="Enable debug messages", action="store_true")
+ap.add_argument("-r", "--ref", help="Store the reference frame in the output directory", action="store_true")
+ap.add_argument("--imgdb", help="Create an image database with the timestamps", action="store_true")
+ap.add_argument("--csvfilename", default="split-info.csv", help="Filename for split information. Default: split-info.csv")
+
 args = vars(ap.parse_args())
 
 if args["debug"]:
     logging.basicConfig(level=logging.DEBUG)
     logging.debug("Set logging level to DEBUG")
 
+if args["imgdb"]:
+    try:
+        import PIL.Image
+    except:
+        logging.error("Please install PIL")
+        sys.exit(1)
+
+    imgdb = []
+    for frame_n, image in enumerate(args["images"]):
+        img = PIL.Image.open(image)
+        modifyDate = img.getexif()[306]
+        dt_date = datetime.datetime.strptime(modifyDate, "%Y:%m:%d %H:%M:%S")
+        imgdb.append({
+            "image" : image,
+            "date"  : modifyDate,
+            "dt"    : dt_date,
+            })
+
+    imgdb.sort(key=lambda x:x["dt"])
+    print(imgdb)
+
+    lastframe = None
+    for img in imgdb:
+        if lastframe is None:
+            lastframe = img
+            continue
+        print((img["dt"] - lastframe["dt"]).total_seconds())
+        lastframe = img
+
+        #TODO: Split into sequences, generate average image over sequence, test
+
+
+    sys.exit(0)
+
 
 outdir = args["out"]
 Path(outdir).mkdir(parents=True, exist_ok=True)
+
+csvfilename = os.path.join(outdir, args["csvfilename"])
 
 additional_images = None
 if args["extra"]:
@@ -182,119 +223,134 @@ def get_avg_image(images, video=False, percentage=20):
 reference_frame = cv2.cvtColor(get_avg_image(args["images"]), cv2.COLOR_BGR2GRAY)
 reference_frame = cv2.GaussianBlur(reference_frame, (21, 21), 0)
 
-## Main func
-for frame_n, image in enumerate(args["images"]):
-    # Get plain image name for later storage
-    image_name = os.path.basename(image).split(".")
-    image_name = (".".join(image_name[:-1]), ".".join(image_name[-1:]))
+if args["ref"]:
+    ref_filename = os.path.join(outdir, "ref_frame.jpg")
+    cv2.imwrite(ref_filename, reference_frame)
+    logging.debug("Stored reference frame " + str(ref_filename))
 
-    img = cv2.imread(image)
+with open(csvfilename, 'w') as csvfile:
+    csvwriter = csv.writer(csvfile)
+    csvwriter.writerow(("input filename", "y_min", "y_max", "x_min", "x_max", "output filename", "output width", "output height"))
 
-    if img is None:
-        logging.warning(str(image) + " is not a valid image. Skipping")
-        continue
+    ## Main func
+    for frame_n, image in enumerate(args["images"]):
+        # Get plain image name for later storage
+        image_name = os.path.basename(image).split(".")
+        image_name = (".".join(image_name[:-1]), ".".join(image_name[-1:]))
 
-    # Relative min area, smaller areas are ignored
-    min_area = int(img.shape[0] * img.shape[1] * args["min_area"])
+        img = cv2.imread(image)
 
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    gray = cv2.GaussianBlur(gray, (21, 21), 0)
-    if reference_frame is None:
-        reference_frame = gray
-        continue
-
-#    if frame_n%REFRESH_REFERENCE_FRAMES == 0:
-#        #refresh reference frame
-#        reference_frame = gray
-#        continue
-
-
-    # TODO: get new reference frame every n images?
-
-    frameDelta = cv2.absdiff(reference_frame, gray)
-
-    thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
-    # dilate the thresholded image to fill in holes, then find contours
-    # on thresholded image
-    thresh = cv2.dilate(thresh, None, iterations=2)
-    cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-
-    cnts = imutils.grab_contours(cnts) # Convenience function for openCV changed behaviour of findContours
-
-    if len(cnts) == 0:
-        # No contours found. Next image
-        logging.info("No contours found in image " + str(image))
-        continue
-
-    (cnts, boundingBoxes) = contours.sort_contours(cnts)
-
-    annotated_img = img.copy()
-
-    annotated_2 = img.copy()
-    for bb in boundingBoxes:
-        (x, y, w, h) = bb
-        cv2.rectangle(annotated_2, (x, y), (x+w, y+h), (0,255,255), 2)
-
-    for bb in get_squared_boxes(boundingBoxes):
-        (x, y, w, h) = bb
-        cv2.rectangle(annotated_2, (x, y), (x+w, y+h), (255, 0, 0), 2)
-
-
-    for bb_i, bb in enumerate(get_squared_boxes(filter_small_boxes(_group_rectangles(extend_boxes(get_squared_boxes(boundingBoxes))), min_area))):
-        (x, y, w, h) = bb
-        cv2.rectangle(annotated_2, (x, y), (x+w, y+h), (0, 0, 255), 2)
-        #print(x,y,w,h)
-        if w < 100:
-            logging.info("Ignoring too small box in image " + str(image))
-            # Ignore too small images
+        if img is None:
+            logging.warning(str(image) + " is not a valid image. Skipping")
             continue
-        # Shift image if required
-        y_min = y
-        y_max = y+h
-        x_min = x
-        x_max = x+w
 
-        if y_min < 0:
-            y_max = y_max + (-1*y_min)
-            y_min = 0
+        # Relative min area, smaller areas are ignored
+        min_area = int(img.shape[0] * img.shape[1] * args["min_area"])
 
-        if x_min < 0:
-            x_max = x_max + (-1*x_min)
-            x_min = 0
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        gray = cv2.GaussianBlur(gray, (21, 21), 0)
+        if reference_frame is None:
+            reference_frame = gray
+            continue
 
-        if x_max >  img.shape[1]:
-            x_min = x_min + img.shape[1] - x_max
-            x_max = img.shape[1]
-
-        if y_max > img.shape[0]:
-            y_min = y_min + img.shape[0] - y_max
-            y_max = img.shape[0]
-
-        cut_image = img[y_min:y_max, x_min:x_max]
-        mid_text = "_cut_squared_"
-        if cut_image.shape[0] != cut_image.shape[1]:
-            logging.warning("Image not square! " + str(cut_image.shape[0:2]))
-            mid_text = "_cut_"
-
-        filename = os.path.join(outdir, image_name[0]+mid_text+str(bb_i+1)+"."+image_name[1])
-        cv2.imwrite(filename, cut_image)
-        logging.debug("Created new subimage " + str(filename))
+    #    if frame_n%REFRESH_REFERENCE_FRAMES == 0:
+    #        #refresh reference frame
+    #        reference_frame = gray
+    #        continue
 
 
+        # TODO: get new reference frame every n images?
 
-    # loop over the contours
-    for c in filter_small_boxes(cnts, min_area):
-        # compute the bounding box for the contour, draw it on the frame,
-        # and update the text
-        (x, y, w, h) = cv2.boundingRect(c)
-        cv2.rectangle(annotated_img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+        frameDelta = cv2.absdiff(reference_frame, gray)
+
+        thresh = cv2.threshold(frameDelta, 25, 255, cv2.THRESH_BINARY)[1]
+        # dilate the thresholded image to fill in holes, then find contours
+        # on thresholded image
+        thresh = cv2.dilate(thresh, None, iterations=2)
+        cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+
+        cnts = imutils.grab_contours(cnts) # Convenience function for openCV changed behaviour of findContours
+
+        if len(cnts) == 0:
+            # No contours found. Next image
+            logging.info("No contours found in image " + str(image))
+            continue
+
+        (cnts, boundingBoxes) = contours.sort_contours(cnts)
+
+        annotated_img = img.copy()
+
+        annotated_2 = img.copy()
+        for bb in boundingBoxes:
+            (x, y, w, h) = bb
+            cv2.rectangle(annotated_2, (x, y), (x+w, y+h), (0,255,255), 2)
+
+        for bb in get_squared_boxes(boundingBoxes):
+            (x, y, w, h) = bb
+            cv2.rectangle(annotated_2, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
 
-    if additional_images:
-        cv2.imwrite(os.path.join(additional_images, image_name[0]+"_plain_boxes." + image_name[1]), annotated_img)
-        cv2.imwrite(os.path.join(additional_images, image_name[0]+"_multiple_boxes." + image_name[1]), annotated_2)
-        cv2.imwrite(os.path.join(additional_images, image_name[0]+"_frameDelta." + image_name[1]), frameDelta)
-        cv2.imwrite(os.path.join(additional_images, image_name[0]+"_frameThres." + image_name[1]), thresh)
+        for bb_i, bb in enumerate(get_squared_boxes(filter_small_boxes(_group_rectangles(extend_boxes(get_squared_boxes(boundingBoxes))), min_area))):
+            (x, y, w, h) = bb
+            cv2.rectangle(annotated_2, (x, y), (x+w, y+h), (0, 0, 255), 2)
+            print("#1",x,y,w,h)
+            if w < 100:
+                logging.info("Ignoring too small box in image " + str(image))
+                # Ignore too small images
+                continue
+            # Shift image if required
+
+            y_min = y
+            y_max = y+h
+            x_min = x
+            x_max = x+w
+
+            print("#2", y_min, y_max, x_min, x_max)
+
+            if y_min < 0:
+                y_max = y_max + (-1*y_min)
+                y_min = 0
+
+            if x_min < 0:
+                x_max = x_max + (-1*x_min)
+                x_min = 0
+
+            if x_max >  img.shape[1]:
+                x_min = x_min + img.shape[1] - x_max
+                x_max = img.shape[1]
+
+            if y_max > img.shape[0]:
+                y_min = y_min + img.shape[0] - y_max
+                y_max = img.shape[0]
+            print("#3",y_min, y_max, x_min, x_max)
+
+            cut_image = img[y_min:y_max, x_min:x_max]
+            mid_text = "_cut_squared_"
+            if cut_image.shape[0] != cut_image.shape[1]:
+                logging.warning("Image not square! " + str(cut_image.shape[0:2]))
+                mid_text = "_cut_"
+                sys.exit(1)
+
+            filename = os.path.join(outdir, image_name[0]+mid_text+str(bb_i+1)+"."+image_name[1])
+            cv2.imwrite(filename, cut_image)
+            csvwriter.writerow((".".join(image_name), y_min, y_max, x_min, x_max, filename, cut_image.shape[0], cut_image.shape[1]))
+            logging.debug("Created new subimage " + str(filename))
+
+
+
+        # loop over the contours
+        for c in filter_small_boxes(cnts, min_area):
+            # compute the bounding box for the contour, draw it on the frame,
+            # and update the text
+            (x, y, w, h) = cv2.boundingRect(c)
+            cv2.rectangle(annotated_img, (x, y), (x + w, y + h), (0, 255, 0), 2)
+
+
+        if additional_images:
+            cv2.imwrite(os.path.join(additional_images, image_name[0]+"_plain_boxes." + image_name[1]), annotated_img)
+            cv2.imwrite(os.path.join(additional_images, image_name[0]+"_multiple_boxes." + image_name[1]), annotated_2)
+            cv2.imwrite(os.path.join(additional_images, image_name[0]+"_frameDelta." + image_name[1]), frameDelta)
+            cv2.imwrite(os.path.join(additional_images, image_name[0]+"_frameThres." + image_name[1]), thresh)
 
 
 
