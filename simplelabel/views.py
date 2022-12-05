@@ -97,12 +97,14 @@ def get_image(request, uuid, max_size=MAX_STANDARD_IMG_SIZE, only_downscale=Fals
             except ValueError:
                 print("Not a valid token")
                 key = None
+                return HttpResponse("Invalid token", status="402")
 
             if key and ApiKey.objects.filter(api_key=key).count():
                 print("Valid token")
                 authenticated = True
         else:
             print("Not a valid header:", auth_header)
+            return HttpResponse("Invalid Auth header", status=402)
 
     if not authenticated and (max_size is None or max_size > MAX_STANDARD_IMG_SIZE):
         max_size=MAX_STANDARD_IMG_SIZE
