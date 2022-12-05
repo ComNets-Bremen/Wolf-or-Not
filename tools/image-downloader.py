@@ -8,8 +8,12 @@ from requests.exceptions import SSLError
 import shutil
 import argparse
 
-ap = argparse.ArgumentParser()
-ap.add_argument("-o", "--out", type=str, default="out", help="The data output directory")
+ap = argparse.ArgumentParser(
+        prog="image-downloader",
+        description="Download images from the SimpleLabel server",
+        epilog="Jens Dede, ComNets, Uni Bremen, 2022",
+        )
+ap.add_argument("-o", "--out", type=str, default="download-output", help="The data output directory")
 ap.add_argument("json", help="The json file to open")
 ap.add_argument("--token", default=None, help="Token to download high res images")
 
