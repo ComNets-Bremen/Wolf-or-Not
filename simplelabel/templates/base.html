@@ -50,7 +50,7 @@
         <div class="dropdown-menu" aria-labelledby="navbarDropdown">
             <a class="dropdown-item" href="{% url "get_statistics" %}">Statistics</a>
             {% if user.is_authenticated %}
-                <a class="dropdown-item" href="{% url "admin:index" %}">Admin overview</a>
+                <a class="dropdown-item" href="{% url "admin:index" %}" target="_blank">Admin overview</a>
                 <a class="dropdown-item" href="{% url "admin:logout" %}">Logout</a>
                 <a class="dropdown-item" href="{% url "upload_images" %}">Upload images </a>
                 <a class="dropdown-item" href="{% url "download_results" %}">Download results </a>
