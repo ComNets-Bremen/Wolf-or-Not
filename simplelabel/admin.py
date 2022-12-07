@@ -18,7 +18,7 @@ class PropertyAdmin(admin.ModelAdmin):
 
 @admin.register(Dataset)
 class DatasetAdmin(admin.ModelAdmin):
-    pass
+    list_display = ('dataset_name', 'dataset_active', 'get_number_images',)
 
 
 @admin.register(Poll)

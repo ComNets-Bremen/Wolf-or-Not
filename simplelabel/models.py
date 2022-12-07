@@ -28,6 +28,10 @@ class Dataset(models.Model):
     dataset_name        = models.CharField(max_length=100, unique=True)
     dataset_active      = models.BooleanField(default=True)
 
+    def get_number_images(self):
+        return Image.objects.filter(image_dataset=self).count()
+    get_number_images.short_description = "Number of images"
+
     def __str__(self):
         return self.dataset_name + " " + (u"✓" if self.dataset_active else u"✗")
 
