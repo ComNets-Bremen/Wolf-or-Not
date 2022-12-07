@@ -19,11 +19,13 @@ class PropertyAdmin(admin.ModelAdmin):
 @admin.register(Dataset)
 class DatasetAdmin(admin.ModelAdmin):
     list_display = ('dataset_name', 'dataset_active', 'get_number_images',)
+    readonly_fields = ('get_number_images',)
 
 
 @admin.register(Poll)
 class PollAdmin(admin.ModelAdmin):
     readonly_fields = ("poll_date",)
+    list_filter = ('poll_image__image_dataset',)
 
 
 @admin.register(ApiKey)
