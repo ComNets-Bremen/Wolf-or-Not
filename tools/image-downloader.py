@@ -9,7 +9,6 @@ import shutil
 import argparse
 
 ap = argparse.ArgumentParser(
-        prog="image-downloader",
         description="Download images from the SimpleLabel server",
         epilog="Jens Dede, ComNets, Uni Bremen, 2022",
         )
