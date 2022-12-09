@@ -16,6 +16,7 @@ ap = argparse.ArgumentParser(
 ap.add_argument("-o", "--out", type=str, default="download-output", help="The data output directory")
 ap.add_argument("json", help="The json file to open")
 ap.add_argument("--token", default=None, help="Token to download high res images")
+ap.add_argument("-s", default=0.8, type=float, help="How sure are the users about this image?")
 
 args = vars(ap.parse_args())
 
@@ -41,7 +42,7 @@ if args["token"]:
 for image in json_data["images"]:
     rcv = image["relative_class_voting"]
     relevant_class = max(rcv, key=rcv.get)
-    if rcv[relevant_class] < 0.8:
+    if rcv[relevant_class] < args["s"]:
         print("Voting not sure enough, skipping", rcv)
         continue
 
