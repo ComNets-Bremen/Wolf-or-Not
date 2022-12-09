@@ -25,3 +25,16 @@ a virtual environment (venv) using pip:
 * imutils
 * numpy
 * opencv-python
+
+
+Tools and their use cases
+=========================
+
+`image-downloader.py`
+
+Download images from the server. Requires the `json`-file from the server with
+the required dataset. If a token is given: Download the original size images.
+Attention: Images are converted to RGB so they might be different to the ones
+uploaded before!
+Per default, only images with at least 0.8% votings for one class are
+available. This value can be adapted via the command line parameter `s`.
