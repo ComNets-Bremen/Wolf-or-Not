@@ -193,7 +193,7 @@ def filter_small_boxes(boxes, min_area):
 
     return output_boxes
 
-def get_avg_image(images, video=False, percentage=20):
+def get_avg_image(images, video=False, percentage=20, min_images = 5):
     img = None
     if video:
         if len(images) != 1:
@@ -201,7 +201,7 @@ def get_avg_image(images, video=False, percentage=20):
         img = []
         vc = cv2.VideoCapture(images[0])
         n_frames = int(vc.get(cv2.CAP_PROP_FRAME_COUNT))
-        get_frames = max(int(n_frames * 0.1), 2)
+        get_frames = min(max(int(n_frames * 0.1), min_images), n_frames)
 
         for frame_number in random.sample(range(0, n_frames-1), get_frames):
             vc.set(cv2.CAP_PROP_POS_FRAMES, frame_number)
@@ -211,7 +211,7 @@ def get_avg_image(images, video=False, percentage=20):
 
     else:
         number = int(len(images)*percentage/100.0)
-        number = max(number, 1) # make sure we have at least one image. TODO: Check / assume a minimum number of images.
+        number = min(max(number, min_images), len(images))
         subset = random.sample(images, number)
         img_sub = [cv2.imread(s, 1) for s in subset]
         img = [i for i in img_sub if i is not None] # Make sure all windows can be opened
