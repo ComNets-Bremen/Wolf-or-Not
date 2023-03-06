@@ -39,7 +39,7 @@
         <input type="hidden" name="image_uuid" value="{{ image.image_uuid }}"/>
         <div class="col">
         {% for class in classes %}
-        <input type="submit" class="btn btn-lg btn-primary" style="background-color: {{ class.class_color }} !important;" name="submit_{{ class.class_id }}" value="{{ class.class_name }}"/>
+        <input type="submit" class="btn btn-lg btn-primary" style="background-color: {{ class.class_color }} !important; color: {{class.get_class_font_color}};" name="submit_{{ class.class_id }}" value="{{ class.class_name }}"/>
         {% endfor %}
         </div>
 

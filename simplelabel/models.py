@@ -11,6 +11,17 @@ class Class(models.Model):
     class_description   = models.TextField(blank=True)
     class_color         = models.CharField(max_length=12, default="00FF00")
 
+    # Tries to automatically find the best color for the font
+    def get_class_font_color(self):
+        hex_color = self.class_color[1:]
+        r, g, b =  tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
+        if round(((r*299)+(g*587)+(b*114))/1000) > 125:
+            # black
+            return "#000000"
+        else:
+            # white
+            return "#FFFFFF"
+
     class Meta:
         ordering = ("class_id",)
 

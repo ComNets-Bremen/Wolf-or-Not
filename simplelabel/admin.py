@@ -4,6 +4,7 @@ from .models import Class, Property, Dataset, Image, Poll, ApiKey
 
 @admin.register(Class)
 class ClassAdmin(admin.ModelAdmin):
+    readonly_fields = ("get_class_font_color",)
     pass
 
 @admin.register(Image)
