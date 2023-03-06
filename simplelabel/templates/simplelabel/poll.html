@@ -8,8 +8,10 @@
       <div class="container-fluid py-5">
         <h1 class="display-5 fw-bold">What do you see?</h1>
 
-        <div class="col">
-            <img src="{{ image.get_image_url }}" class="img-fluid" alt="Image to check" loading="lazy">
+        <div class="col d-flex align-items-center justify-content-center">
+            <div class="square">
+                <img src="{{ image.get_image_url }}" alt="Image to check" loading="lazy">
+            </div>
         </div>
 
 
