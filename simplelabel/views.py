@@ -26,8 +26,21 @@ import numpy as np
 
 import datetime
 
-
 MAX_STANDARD_IMG_SIZE = 400
+
+def expand2square(pil_img, background_color):
+    width, height = pil_img.size
+    if width == height:
+        return pil_img
+    elif width > height:
+        result = PI.new(pil_img.mode, (width, width), background_color)
+        result.paste(pil_img, (0, (width - height) // 2))
+        return result
+    else:
+        result = PI.new(pil_img.mode, (height, height), background_color)
+        result.paste(pil_img, ((height - width) // 2, 0))
+        return result
+
 
 def index(request):
     return render(request, 'simplelabel/index.html')
@@ -82,7 +95,7 @@ def get_statistics(request):
 """
 Show the requested image and make sure it is something which can be shown in the Webbrowser
 """
-def get_image(request, uuid, max_size=MAX_STANDARD_IMG_SIZE, only_downscale=False):
+def get_image(request, uuid, max_size=MAX_STANDARD_IMG_SIZE, only_downscale=False, force_squared=True):
     image = get_object_or_404(Image, image_uuid=uuid).image
 
     authenticated = request.user.is_authenticated
@@ -116,6 +129,10 @@ def get_image(request, uuid, max_size=MAX_STANDARD_IMG_SIZE, only_downscale=Fals
             si.thumbnail((max_size, max_size))
         else:
             si = PIO.contain(si, (max_size, max_size))
+
+    if force_squared:
+        si = expand2square(si, (211, 211, 211))
+
     out = BytesIO()
     si.save(out, format="JPEG")
     im.close()
