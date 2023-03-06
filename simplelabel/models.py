@@ -10,6 +10,7 @@ class Class(models.Model):
     class_id            = models.PositiveSmallIntegerField(unique=True)
     class_description   = models.TextField(blank=True)
     class_color         = models.CharField(max_length=12, default="00FF00")
+    class_is_visible    = models.BooleanField(default=True)
 
     # Tries to automatically find the best color for the font
     def get_class_font_color(self):
@@ -26,7 +27,7 @@ class Class(models.Model):
         ordering = ("class_id",)
 
     def __str__(self):
-        return str(self.class_id) + ": " + self.class_name
+        return str(self.class_id) + ": " + self.class_name + (" 👁" if self.class_is_visible else "")
 
 class Property(models.Model):
     property_name       = models.CharField(max_length=100)

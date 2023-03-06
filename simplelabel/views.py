@@ -161,7 +161,7 @@ class PollImageView(FormView):
         random_pk = random.choice(pks)
         random_img = Image.objects.get(pk=random_pk)
 
-        classes = Class.objects.all()
+        classes = Class.objects.filter(class_is_visible=True)
         context["classes"] = classes
         context["image"] = random_img
         return context
