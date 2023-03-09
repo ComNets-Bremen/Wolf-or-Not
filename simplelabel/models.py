@@ -66,6 +66,9 @@ class Image(models.Model):
     def get_filename(self):
         return os.path.basename(self.image.name)
 
+    def get_number_polls(self):
+        return Poll.objects.filter(poll_image=self).count()
+
     class Meta:
         ordering = ("image",)
 

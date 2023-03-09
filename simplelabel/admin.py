@@ -9,8 +9,9 @@ class ClassAdmin(admin.ModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    readonly_fields = ("image_height", "image_width", "image_uuid", "get_image_url")
+    readonly_fields = ("image_height", "image_width", "image_uuid", "get_image_url", "get_number_polls")
     list_filter = ("image_dataset",)
+    list_display = ("image", "get_number_polls",)
 
 @admin.register(Property)
 class PropertyAdmin(admin.ModelAdmin):
