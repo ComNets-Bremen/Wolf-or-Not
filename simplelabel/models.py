@@ -66,6 +66,8 @@ class Image(models.Model):
     def get_filename(self):
         return os.path.basename(self.image.name)
 
+    class Meta:
+        ordering = ("image",)
 
 class Poll(models.Model):
     poll_date = models.DateTimeField(auto_now_add=True, blank=True)
