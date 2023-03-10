@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.text import slugify
 from django.dispatch import receiver
 from django.urls import reverse
+from django.db.models import Subquery
 import os
 import uuid
 
