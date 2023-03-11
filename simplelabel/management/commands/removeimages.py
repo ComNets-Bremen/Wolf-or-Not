@@ -27,11 +27,19 @@ class Command(BaseCommand):
             else:
                 ids_to_keep += subimages
 
+        ids_to_remove = list(set(ids_to_remove))
+
         self.stdout.write(self.style.SUCCESS("Removing " + str(len(ids_to_remove)) + " images. Continue?"))
-        dec = input("[yY|nN]")
-        if dec in ["y", "Y"]:
-            for i in ids_to_remove:
-                i.delete()
-            self.stdout.write(self.style.SUCCESS("Done"))
-        else:
-            self.stdout.write(self.style.SUCCESS("Aborting"))
+        while True:
+            dec = input("[yY|nN]")
+            if dec in ["y", "Y"]:
+                for i in ids_to_remove:
+                    i.delete()
+                self.stdout.write(self.style.SUCCESS("Done"))
+                break
+            elif dec in ["n", "N"]:
+                self.stdout.write(self.style.SUCCESS("Aborting"))
+                break
+            else:
+                self.stdout.write(self.style.SUCCESS("Invalid selection. Please try again"))
+
