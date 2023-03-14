@@ -1,15 +1,9 @@
 #!/usr/bin/env python3
-#Format: Pascal VOC: https://towardsdatascience.com/coco-data-format-for-object-detection-a4c5eaf518c5
 
 # Jens Dede, Sustainable Communication Networks (ComNets)
 # <jd@comnets.uni-bremen.de>
 """
-Kind of a hacky script but seems to work. As usual: Needs a lot of refactoring.
-
-Uses an arbitrary model to detect something on images (i.e. wolves), cuts out
-the possible detections and stores the mapping between original image and
-the cropped image. In theory, it should be possible to undo the mapping after
-the subimages were analyzed by others.
+Comparison of the original detections (sqlite) and the user votes from the app (json)
 """
 
 from pathlib import Path
@@ -35,7 +29,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import Column, Integer, String, DateTime, Boolean, Float
 from sqlalchemy.orm import sessionmaker
 
-parser = argparse.ArgumentParser(description="Run image detection on the image, store the results into a db and cut the region of interest for additional processing")
+parser = argparse.ArgumentParser(description="How much do the user detection differ from the the original images? -> This script gives the answer.")
 parser.add_argument('sqlite', default="image-mapping.sqlite", type=str, help="The SQLITE-file with the mapping")
 parser.add_argument('json', default="output.json", type=str, help="The json file from the app server")
 args = parser.parse_args()
