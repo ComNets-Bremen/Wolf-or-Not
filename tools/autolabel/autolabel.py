@@ -35,7 +35,7 @@ parser.add_argument("model", type=str, help="The model to be used.")
 parser.add_argument("images", type=str, nargs="+", help="The images as an array")
 parser.add_argument('--glob', action='store_true', help="interpret string as glob")
 parser.add_argument('--export_labels', action='store_true', help="Store current detections in YOLO-Format next to the images")
-parser.add_argument('--batchsize', default=5, help="Batchsize for image processing")
+parser.add_argument('--batchsize', default=5, type=int, help="Batchsize for image processing")
 parser.add_argument('--force-reload', action='store_true', help="Force reloading the model")
 parser.add_argument('--output_dir', default=None, help="The output dir for the images and database")
 
