@@ -78,7 +78,7 @@ class ImageMapping(Base):
     class_prop    = Column(Float)
 
     def __repr__(self):
-        return f"<ImageMapping(image_name={self.image_name}, model_name={self.model_name}, datetime={self.datetime}, subimage_name={self.subimage_name}, x_center_norm={self.x_center_norm}, y_center_norm={self.y_center_norm}, x_width_norm={x_width_norm}, y_height_norm={x_height_norm}, class_numeric={self.class_numeric}, class_text={self.class_text}, class_prop={self.class_prop})>"
+        return f"<ImageMapping(image_name={self.image_name}, model_name={self.model_name}, datetime={self.datetime}, subimage_name={self.subimage_name}, x_center_norm={self.x_center_norm}, y_center_norm={self.y_center_norm}, x_width_norm={self.x_width_norm}, y_height_norm={self.y_height_norm}, class_numeric={self.class_numeric}, class_text={self.class_text}, class_prop={self.class_prop})>"
 Base.metadata.create_all(engine)
 
 
