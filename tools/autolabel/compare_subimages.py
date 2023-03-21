@@ -107,13 +107,13 @@ plt.rcParams.update({
     "font.family": "sans-serif",
 })
 
-fig, ax = plt.subplots(figsize=(7, 5))
+fig, ax = plt.subplots(figsize=(5, 3))
 ax.hist(wrong_classes_props, bins, density=1, label="Wrong", alpha=0.5, color="red")
 ax.hist(correct_classes_props, bins, density=1, label="Correct", alpha=0.5, color="green")
 ax.xaxis.set_major_formatter(mtick.PercentFormatter(1))
 ax.set_yticklabels([])
-ax.set_xlabel(f"Model prediction probability (n={total_images})")
-ax.set_ylabel("Density")
+ax.set_xlabel(f"Scores (probabilities of detection), n={total_images}")
+ax.set_ylabel("Normalized Frequency")
 plt.legend(loc='upper left')
 plt.title("Comparison of Model Predictions and User Votes")
 fig.tight_layout()
