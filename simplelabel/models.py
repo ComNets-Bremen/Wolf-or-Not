@@ -57,6 +57,7 @@ class Image(models.Model):
     image_width     = models.PositiveIntegerField(blank=True)
     image_height    = models.PositiveIntegerField(blank=True)
     image_dataset   = models.ForeignKey("Dataset", on_delete=models.CASCADE)
+    image_duplicate = models.ForeignKey("self", related_name="duplicate", null=True, on_delete=models.SET_NULL)
 
     def __str__(self):
         return str(self.image_dataset) + ": " + self.image.name
