@@ -1,4 +1,4 @@
-SimpleLabel - A web service for labeling tons of images
+Wolf or Not - A web service for labeling tons of images
 =======================================================
 
 This is the repository for the SimpleLabel project. This project is developed by
