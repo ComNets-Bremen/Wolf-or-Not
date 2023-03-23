@@ -3,6 +3,7 @@
  */
 
 num_elements = 0;
+total_elements = 0;
 const forms = [];
 
 function sendForms() {
@@ -23,7 +24,7 @@ function sendForms() {
         request.open("POST", "", false);
         request.send(form);
     } else {
-        statusDiv.innerHTML="Upload Done";
+        statusDiv.innerHTML="Upload Done: " + total_elements + " images.";
     }
 }
 
@@ -37,13 +38,25 @@ window.onload = function () {
         form.style.display="none";
 
         const images = document.getElementById("id_image");
-        let max_files = images.files.length;
 
+        total_elements = images.files.length;
+
+        let split_counter = 0
+
+        let fd = new FormData(form);
+        fd.delete("image");
         Array.from(images.files).forEach((file, i) => {
-            const fd = new FormData(form);
-            fd.set("image", file);
-            forms.push(fd);
+            split_counter++;
+            if (split_counter >= 25) { // Upload in batches of 25 images
+                split_counter = 0;
+                forms.push(fd);
+                fd = new FormData(form);
+                fd.delete("image");
+            }
+            fd.append("image", file);
         });
+        forms.push(fd);
+
         form.reset();
         num_elements = forms.length;
         e.preventDefault();
