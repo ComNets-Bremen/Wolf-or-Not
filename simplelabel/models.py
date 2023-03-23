@@ -3,6 +3,9 @@ from django.utils.text import slugify
 from django.dispatch import receiver
 from django.urls import reverse
 from django.db.models import Subquery
+
+from django.utils.html import mark_safe
+
 import os
 import uuid
 
@@ -49,17 +52,21 @@ class Dataset(models.Model):
         return self.dataset_name + " " + (u"✓" if self.dataset_active else u"✗")
 
 class Image(models.Model):
-    image = models.ImageField(
+    image           = models.ImageField(
             upload_to="images/%Y/%m/%d/",
             height_field="image_height",
             width_field="image_width")
+    image_original_name = models.CharField(max_length=100, default="")
     image_uuid      = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     image_width     = models.PositiveIntegerField(blank=True)
     image_height    = models.PositiveIntegerField(blank=True)
     image_dataset   = models.ForeignKey("Dataset", on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.image_dataset) + ": " + self.image.name
+        if len(self.image_original_name):
+            return str(self.image_dataset) + ": " + self.image_original_name
+        else:
+            return str(self.image_dataset) + ": " + self.image.name
 
     def get_image_url(self):
         return reverse("get_image", kwargs={"uuid" : self.image_uuid})
@@ -69,6 +76,11 @@ class Image(models.Model):
 
     def get_number_polls(self):
         return Poll.objects.filter(poll_image=self).count()
+
+    def image_preview(self):
+        return mark_safe('<img src = "{url}" width = "300"/>'.format(
+             url = self.get_image_url()
+         ))
 
     class Meta:
         ordering = ("image",)
@@ -113,6 +125,9 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     when corresponding `Image` object is updated
     with new file.
     """
+    if len(instance.image_original_name) == 0:
+        instance.image_original_name = instance.image.name
+
     if not instance.pk:
         return False
 

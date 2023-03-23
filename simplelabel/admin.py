@@ -9,7 +9,7 @@ class ClassAdmin(admin.ModelAdmin):
 
 @admin.register(Image)
 class ImageAdmin(admin.ModelAdmin):
-    readonly_fields = ("image_height", "image_width", "image_uuid", "get_image_url", "get_number_polls")
+    readonly_fields = ("image", "image_height", "image_width", "image_uuid", "get_image_url", "get_number_polls", "image_original_name", "image_preview")
     list_filter = ("image_dataset",)
     list_display = ("__str__", "get_number_polls",)
 
