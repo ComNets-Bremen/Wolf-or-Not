@@ -250,6 +250,7 @@ class DownloadView(LoginRequiredMixin, FormView):
             img["image_uuid"]    = image.image_uuid
             img["image_url"]     = server + image.get_image_url()
             img["image_dataset"] = image.image_dataset.dataset_name
+            img["image_original_name"] = image.image_original_name
             img["polls"] = []
             num_class_ids = []
             for poll in Poll.objects.filter(poll_image=image).prefetch_related('poll_class', 'poll_property'):
