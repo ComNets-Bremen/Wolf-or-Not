@@ -50,8 +50,5 @@ def detect_near_duplicates():
     for to_update, replaced_by in to_delete.items():
         update_duplicates(conn, to_update, replaced_by)
 
-
-
-
 if __name__ == "__main__":
     detect_near_duplicates()

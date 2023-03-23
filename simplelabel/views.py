@@ -1,3 +1,4 @@
+from django.db.models.expressions import RawSQL
 from django.shortcuts import render, get_object_or_404, get_list_or_404
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, FileResponse, Http404
 from django.urls import reverse
@@ -54,7 +55,7 @@ def redirect_to_here(request):
 Show some simple statistics of the data currently being labeled
 """
 def get_statistics(request):
-    p = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll", distinct=True)).order_by("-num_polls").values_list("num_polls", "image_uuid")
+    p = Image.objects.filter(image_dataset__dataset_active=True, image_duplicate__isnull=True).annotate(num_polls=Count("poll", distinct=True)).order_by("-num_polls").values_list("num_polls", "image_uuid")
 
     values = [i[0] for i in p]
 
@@ -77,7 +78,7 @@ def get_statistics(request):
     freq_list_dict = sorted(freq_list_dict, key=lambda d: d["number_polls"])
 
     data = {
-            "image_count" : Image.objects.filter(image_dataset__dataset_active=True).count(),
+            "image_count" : Image.objects.filter(image_dataset__dataset_active=True, image_duplicate__isnull=True).count(),
             "poll_count" : Poll.objects.filter(poll_image__image_dataset__dataset_active=True).count(),
             "mean_count_image" : round(np.mean(values),2) if len(values) else 0,
             "max_count_image" : np.max(values) if len(values) else 0,
@@ -172,7 +173,8 @@ class PollImageView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        pks = Image.objects.filter(image_dataset__dataset_active=True).values_list('pk', flat=True)
+        pks = Image.objects.filter(image_dataset__dataset_active=True, image_duplicate__isnull=True)\
+            .values_list('pk', flat=True)
         if len(pks) == 0:
             raise Http404("No polls available yet. Please return later")
         random_pk = random.choice(pks)
