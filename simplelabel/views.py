@@ -153,8 +153,6 @@ class UploadImagesView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         image_dataset = form.cleaned_data["image_dataset"]
         for i in form.files.getlist("image"):
-            print("Adding image", i)
-            print(type(i), i.size)
             Image.objects.create(image=i, image_dataset=image_dataset).save()
 
         #return super().form_valid(form)
