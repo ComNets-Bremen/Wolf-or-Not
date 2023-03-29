@@ -44,7 +44,6 @@ class Migration(migrations.Migration):
                 ('image_width', models.PositiveIntegerField()),
                 ('image_height', models.PositiveIntegerField()),
                 ('image_dataset', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='simplelabel.dataset')),
-                ('image_duplicate', models.ForeignKey(on_delete=django.db.models.deletion.SET_NULL, to='simplelabel.image')),
             ],
         ),
     ]

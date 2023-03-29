@@ -19,12 +19,12 @@ def create_connection(db_file):
     return conn
 
 def get_files_list(conn) -> list:
-    sql = "SELECT simplelabel_image.image FROM simplelabel_image JOIN simplelabel_dataset ON"\
-    " simplelabel_image.image_dataset_id = simplelabel_dataset.id WHERE simplelabel_dataset.dataset_active"
+    sql = "SELECT simplelabel_image.image , simplelabel_image.image_uuid FROM simplelabel_image JOIN simplelabel_dataset" \
+          " ON simplelabel_image.image_dataset_id = simplelabel_dataset.id WHERE simplelabel_dataset.dataset_active"
     cur = conn.cursor()
     cur.execute(sql)
     res = cur.fetchall()
-    return [i[0] for i in res]
+    return [(i[0], i[1]) for i in res]
 
 def update_duplicates(conn, to_update, replaced_by):
     print(to_update + " : " +replaced_by)
@@ -43,11 +43,14 @@ def reset_duplicate_column(conn):
         conn.commit()
 def detect_near_duplicates():
     conn = create_connection("db.sqlite3")
-    files_list = get_files_list(conn)
+    images_list = get_files_list(conn)
+    files_list = [i[0] for i in images_list]
     to_delete = CNN.find_duplicates("", threshold=0.93, scores=False, use_cuda=False, files_list=files_list)
     print(to_delete)
     reset_duplicate_column(conn)
     for to_update, replaced_by in to_delete.items():
+        idx = files_list.index(replaced_by)
+        replaced_by = images_list[idx][1]
         update_duplicates(conn, to_update, replaced_by)
 
 if __name__ == "__main__":

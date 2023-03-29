@@ -232,6 +232,10 @@ class DownloadView(LoginRequiredMixin, FormView):
         min_num_polls = form.cleaned_data["num_polls"]
 
         related_images = Image.objects.all().annotate(num_polls=Count("poll", distinct=True)).filter(num_polls__gte=min_num_polls, image_dataset__in=datasets)
+        dup_images = Image.objects.all().filter(image_duplicate__isnull=False).filter(image_duplicate__in=related_images)
+        print("If we try to use __in related=images it return an empty list")
+        print(dup_images)
+
         related_polls = Poll.objects.filter(poll_image__in=related_images)
 
         classes = { cls[0]: (cls[1], cls[2]) for cls in Class.objects.all().values_list('id', 'class_name', 'class_id')}
@@ -246,15 +250,45 @@ class DownloadView(LoginRequiredMixin, FormView):
         ret["classes"] = [{"class_name" : cls[0], "class_id" : cls[1]} for cls in Class.objects.all().values_list('class_name', 'class_id')]
         ret["properties"] = [p[0] for p in Property.objects.all().values_list('property_name')]
 
-        for image in related_images:
+        # For non duplicated
+        for image in related_images | dup_images:
             img = {}
             img["image_name"]    = image.get_filename()
             img["image_uuid"]    = image.image_uuid
             img["image_url"]     = server + image.get_image_url()
             img["image_dataset"] = image.image_dataset.dataset_name
+            img["image_duplicated"]    = image.image_duplicate_id
             img["polls"] = []
             num_class_ids = []
-            for poll in Poll.objects.filter(poll_image=image).prefetch_related('poll_class', 'poll_property'):
+            if img["image_duplicated"] is None:
+                polls = Poll.objects.filter(poll_image=image).prefetch_related('poll_class', 'poll_property')
+            else:
+                polls = Poll.objects.filter(poll_image=image.image_duplicate).prefetch_related('poll_class', 'poll_property')
+            for poll in polls:
+                d = {}
+                cls = poll.poll_class.all()[0]
+                d["class"] = cls.class_name
+                d["class_id"] = cls.class_id
+                num_class_ids.append(cls.class_id)
+                d["properties"] = [p.property_name for p in poll.poll_property.all()]
+                img["polls"].append(d)
+
+            class_id_counts = {ids:num_class_ids.count(ids)/len(num_class_ids) for ids in num_class_ids}
+            img["relative_class_voting"] = class_id_counts
+
+            ret["images"].append(img)
+
+        # For duplicated
+        for image in dup_images:
+            img = {}
+            img["image_name"]    = image.get_filename()
+            img["image_uuid"]    = image.image_uuid
+            img["image_url"]     = server + image.get_image_url()
+            img["image_dataset"] = image.image_dataset.dataset_name
+            img["duplicated"]    = image.image_duplicate_id
+            img["polls"] = []
+            num_class_ids = []
+            for poll in Poll.objects.filter(poll_image=image.image_duplicate).prefetch_related('poll_class', 'poll_property'):
                 d = {}
                 cls = poll.poll_class.all()[0]
                 d["class"] = cls.class_name
