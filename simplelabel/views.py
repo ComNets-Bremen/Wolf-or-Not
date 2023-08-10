@@ -170,10 +170,24 @@ class PollImageView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        pks = Image.objects.filter(image_dataset__dataset_active=True).values_list('pk', flat=True)
-        if len(pks) == 0:
-            raise Http404("No polls available yet. Please return later")
-        random_pk = random.choice(pks)
+        use_betavariate = True
+        random_pk = None
+
+        if use_betavariate:
+            pks = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll")).order_by("num_polls").values_list('pk', flat=True)
+            if len(pks) == 0:
+                raise Http404("No polls available yet. Please return later")
+            # TODO: Maybe check the parameters. Should be a uniform
+            # distribution with a slightly higher probability towards low
+            # values (i.e. images with less polls).
+            random_pk = pks[round(random.betavariate(0.8, 1) * (len(pks)-1))]
+        else:
+            pks = Image.objects.filter(image_dataset__dataset_active=True).values_list('pk', flat=True)
+            if len(pks) == 0:
+                raise Http404("No polls available yet. Please return later")
+            random_pk = random.choice(pks)
+
+
         random_img = Image.objects.get(pk=random_pk)
 
         classes = Class.objects.filter(class_is_visible=True)
