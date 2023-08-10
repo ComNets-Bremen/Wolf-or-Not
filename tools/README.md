@@ -15,7 +15,6 @@ to an `.mp4` file:
 
 
 
-
 Required libraries (venv)
 =========================
 
@@ -25,6 +24,7 @@ a virtual environment (venv) using pip:
 * imutils
 * numpy
 * opencv-python
+* Pillow
 
 
 Tools and their use cases
