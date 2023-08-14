@@ -16,7 +16,8 @@
                 <li class="list-group-item">Original name: {{ object.image_original_name }}</li>
                 <li class="list-group-item">Dataset: {{ object.image_dataset.dataset_name }}</li>
                 <li class="list-group-item">Width x height: {{ object.image_width }} x {{ object.image_height }}</li>
-                <li class="list-group-item"><a href="{{ object.get_image_url }}">Download image</a></li>
+                <li class="list-group-item"><a href="{{ object.get_image_url }}">Download scaled image</a></li>
+                <li class="list-group-item"><a href="{{ object.get_original_image_url }}">Download original image</a></li>
             </ul>
       </div>
     </div>

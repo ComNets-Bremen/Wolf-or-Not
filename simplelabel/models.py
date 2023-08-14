@@ -71,6 +71,9 @@ class Image(models.Model):
     def get_image_url(self):
         return reverse("get_image", kwargs={"uuid" : self.image_uuid})
 
+    def get_original_image_url(self):
+        return reverse("get_original_image", kwargs={"uuid" : self.image_uuid})
+
     def get_image_detail_url(self):
         return reverse("get_image_details", kwargs={"uuid" : self.image_uuid})
 
