@@ -5,20 +5,48 @@
 
 {% block main %}
     <div class="p-5 mb-4 bg-light rounded-3 text-center">
-      <div class="container-fluid py-5">
+      <div class="container">
         <h1 class="display-5 fw-bold">Image Details</h1>
 
         <div class="col">
                 <img src="{{ object.get_image_url }}" class="img-fluid" alt="Image">
         </div>
-            <ul class="list-group">
-                <li class="list-group-item">Image UUID: {{ object.image_uuid }}</li>
-                <li class="list-group-item">Original name: {{ object.image_original_name }}</li>
-                <li class="list-group-item">Dataset: {{ object.image_dataset.dataset_name }}</li>
-                <li class="list-group-item">Width x height: {{ object.image_width }} x {{ object.image_height }}</li>
-                <li class="list-group-item"><a href="{{ object.get_image_url }}">Download scaled image</a></li>
-                <li class="list-group-item"><a href="{{ object.get_original_image_url }}">Download original image</a></li>
-            </ul>
+      </div>
+      <div class="container">
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th scope="col">Key</th>
+              <th scope="col">Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Image UUID</td>
+              <td>{{ object.image_uuid }}</td>
+            </tr>
+            <tr>
+              <td>Original name</td>
+              <td>{{ object.image_original_name }}</td>
+            </tr>
+            <tr>
+              <td>Dataset</td>
+              <td>{{ object.image_dataset.dataset_name }}</td>
+            </tr>
+            <tr>
+              <td>Size</td>
+              <td>{{ object.image_width }} x {{ object.image_height }}</td>
+            </tr>
+            <tr>
+              <td>Scaled image</td>
+              <td><a href="{{ object.get_image_url }}">download</a></td>
+            </tr>
+            <tr>
+              <td>Original image</td>
+              <td><a href="{{ object.get_original_image_url }}">download</a></td>
+            </tr>
+          </tbody>
+        </table>
       </div>
     </div>
 {% endblock %}
