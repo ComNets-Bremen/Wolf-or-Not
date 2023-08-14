@@ -180,7 +180,10 @@ class PollImageView(FormView):
             # TODO: Maybe check the parameters. Should be a uniform
             # distribution with a slightly higher probability towards low
             # values (i.e. images with less polls).
-            random_pk = pks[round(random.betavariate(0.8, 1) * (len(pks)-1))]
+            # We have two options implemented here: betavariate and triangular:
+
+            #random_pk = pks[round(random.betavariate(0.8, 1) * (len(pks)-1))]
+            random_pk = pks[round(random.triangular(0, len(pks)-1, 0))]
         else:
             pks = Image.objects.filter(image_dataset__dataset_active=True).values_list('pk', flat=True)
             if len(pks) == 0:
