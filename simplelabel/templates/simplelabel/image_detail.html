@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% load static %}
+{% load attr_extras %}
+
+{% block main %}
+    <div class="p-5 mb-4 bg-light rounded-3 text-center">
+      <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">Image Details</h1>
+
+        <div class="col">
+                <img src="{{ object.get_image_url }}" class="img-fluid" alt="Image">
+        </div>
+            <ul class="list-group">
+                <li class="list-group-item">Image UUID: {{ object.image_uuid }}</li>
+                <li class="list-group-item">Original name: {{ object.image_original_name }}</li>
+                <li class="list-group-item">Dataset: {{ object.image_dataset.dataset_name }}</li>
+                <li class="list-group-item">Width x height: {{ object.image_width }} x {{ object.image_height }}</li>
+                <li class="list-group-item"><a href="{{ object.get_image_url }}">Download image</a></li>
+            </ul>
+      </div>
+    </div>
+{% endblock %}

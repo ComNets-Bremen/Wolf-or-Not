@@ -3,6 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, FileRe
 from django.urls import reverse
 
 from django.views.generic.edit import FormView, CreateView
+from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -139,6 +140,15 @@ def get_image(request, uuid, max_size=MAX_STANDARD_IMG_SIZE, only_downscale=Fals
     out.seek(0)
 
     return FileResponse(out, content_type="image/jpeg")
+
+"""
+Simple detail view class for administrative reasons
+"""
+class ImageDetailView(LoginRequiredMixin, DetailView):
+    model = Image
+    slug_field = 'image_uuid'
+    slug_url_kwarg = 'uuid'
+
 
 """
 View to upload additional images

@@ -42,7 +42,9 @@
         </div>
 
       </form>
-
+        {% if user.is_authenticated %}
+        <p> <a href="{{ image.get_image_detail_url }}">Details</a></p>
+        {% endif %}
 
       </div>
     </div>

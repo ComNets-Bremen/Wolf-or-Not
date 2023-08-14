@@ -71,6 +71,9 @@ class Image(models.Model):
     def get_image_url(self):
         return reverse("get_image", kwargs={"uuid" : self.image_uuid})
 
+    def get_image_detail_url(self):
+        return reverse("get_image_details", kwargs={"uuid" : self.image_uuid})
+
     def get_filename(self):
         return os.path.basename(self.image.name)
 
@@ -127,6 +130,7 @@ def auto_delete_file_on_change(sender, instance, **kwargs):
     """
     if len(instance.image_original_name) == 0:
         instance.image_original_name = instance.image.name
+
 
     if not instance.pk:
         return False
