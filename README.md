@@ -112,7 +112,7 @@ security sections of this document.
 Publications
 ============
 
-- Nothing yet
+- *Jens Dede and Anna Förster*: **Animals in the Wild: Using Crowdsourcing to enhance the labelling of Camera Trap Images**, 2nd DISCOLI Workshop on DIStributed COLlective Intelligence (DISCOLI 2023), Pafos, Cyprus, June 19-21, 2023
 
 License
 =======
