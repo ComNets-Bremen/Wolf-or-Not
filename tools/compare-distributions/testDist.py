@@ -7,7 +7,7 @@ import random
 import matplotlib.pyplot as plt
 
 num_images = 100
-num_polls = 200
+num_polls = 300
 
 plt.rcParams.update({
     "text.usetex": True,
