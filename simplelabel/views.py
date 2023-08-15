@@ -225,14 +225,14 @@ class PollImageView(FormView):
 
         image_uuid = UUID(self.request.POST["image_uuid"])
         image = Image.objects.get(image_uuid=image_uuid)
-        print(image)
+        #print(image)
 
         x_forwarded_for = self.request.META.get('HTTP_X_FORWARDED_FOR')
         if x_forwarded_for:
             ip = x_forwarded_for.split(',')[0]
         else:
             ip = self.request.META.get('REMOTE_ADDR')
-        print("IP", ip, "class", cls)
+        #print("IP", ip, "class", cls)
 
         props = form.cleaned_data["properties"]
 
