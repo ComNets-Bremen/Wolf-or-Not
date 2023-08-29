@@ -9,6 +9,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from django.db.models import Count
 
+from django.conf import settings
+
 from collections import Counter
 
 import random
@@ -184,10 +186,9 @@ class PollImageView(FormView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        use_betavariate = True
         random_pk = None
 
-        if use_betavariate:
+        if settings.POLL_USE_BETAVARIATE:
             pks = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll")).order_by("num_polls").values_list('pk', flat=True)
             if len(pks) == 0:
                 raise Http404("No polls available yet. Please return later")
@@ -196,7 +197,7 @@ class PollImageView(FormView):
             # values (i.e. images with less polls).
             # We have two options implemented here: betavariate and triangular:
 
-            random_pk = pks[round(random.betavariate(0.6, 1) * (len(pks)-1))]
+            random_pk = pks[round(random.betavariate(settings.BETAVARIATE_ALPHA, settings.BETAVARIATE_BETA) * (len(pks)-1))]
             #random_pk = pks[round(random.triangular(0, len(pks)-1, 0))]
         else:
             pks = Image.objects.filter(image_dataset__dataset_active=True).values_list('pk', flat=True)

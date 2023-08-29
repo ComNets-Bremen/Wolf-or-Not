@@ -148,6 +148,13 @@ MEDIA_ROOT=BASE_DIR
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
+# Setup for the selection of the next image
+
+POLL_USE_BETAVARIATE = True # Use the betavariate. Otherwise use uniform
+BETAVARIATE_ALPHA    = 0.6  # Alpha for the betavariate
+BETAVARIATE_BETA     = 1    # Beta for the betavariate
+
+
 # Overwrite settings by local ones (if available)
 try:
     from .settings_local import *
