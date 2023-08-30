@@ -181,7 +181,12 @@ database.
 """
 class PollImageView(FormView):
     form_class = PollForm
-    template_name = "simplelabel/poll.html"
+
+    def get_template_names(self):
+        if self.have_images:
+            return ["simplelabel/poll.html"]
+        return["simplelabel/no_images.html"]
+
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -192,24 +197,30 @@ class PollImageView(FormView):
             pks = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll")).order_by("num_polls")#.filter(num_polls__lte=3)
 
             max_polls = getattr(settings, "LIMIT_NUM_POLLS", None)
-            print(max_polls)
             if max_polls:
                 pks = pks.filter(num_polls__lte=max_polls)
 
             pks = pks.values_list('pk', flat=True)
             if len(pks) == 0:
-                raise Http404("No polls available yet. Please return later")
-
-            random_pk = pks[round(random.betavariate(settings.BETAVARIATE_ALPHA, settings.BETAVARIATE_BETA) * (len(pks)-1))]
-            #random_pk = pks[round(random.triangular(0, len(pks)-1, 0))]
+                #raise Http404("No polls available yet. Please return later")
+                random_pk = None
+            else:
+                random_pk = pks[round(random.betavariate(settings.BETAVARIATE_ALPHA, settings.BETAVARIATE_BETA) * (len(pks)-1))]
+                #random_pk = pks[round(random.triangular(0, len(pks)-1, 0))]
         else:
             pks = Image.objects.filter(image_dataset__dataset_active=True).values_list('pk', flat=True)
             if len(pks) == 0:
-                raise Http404("No polls available yet. Please return later")
-            random_pk = random.choice(pks)
+                #raise Http404("No polls available yet. Please return later")
+                random_pk = None
+            else:
+                random_pk = random.choice(pks)
 
+        if random_pk:
+            random_img = Image.objects.get(pk=random_pk)
+        else:
+            random_img = None
 
-        random_img = Image.objects.get(pk=random_pk)
+        self.have_images = random_pk is not None
 
         classes = Class.objects.filter(class_is_visible=True)
         context["classes"] = classes
