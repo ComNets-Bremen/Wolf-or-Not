@@ -194,11 +194,11 @@ class PollImageView(FormView):
         random_pk = None
 
         if settings.POLL_USE_BETAVARIATE:
-            pks = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll")).order_by("num_polls")#.filter(num_polls__lte=3)
+            pks = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll")).order_by("num_polls")
 
             max_polls = getattr(settings, "LIMIT_NUM_POLLS", None)
             if max_polls:
-                pks = pks.filter(num_polls__lte=max_polls)
+                pks = pks.filter(num_polls__lt=max_polls)
 
             pks = pks.values_list('pk', flat=True)
             if len(pks) == 0:
