@@ -43,6 +43,7 @@ class Property(models.Model):
 class Dataset(models.Model):
     dataset_name        = models.CharField(max_length=100, unique=True)
     dataset_active      = models.BooleanField(default=True)
+    dataset_max_polls   = models.PositiveSmallIntegerField(default=100)
 
     def get_number_images(self):
         return Image.objects.filter(image_dataset=self).count()

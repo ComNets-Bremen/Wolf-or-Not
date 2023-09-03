@@ -7,7 +7,7 @@ from django.views.generic import DetailView
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 
-from django.db.models import Count
+from django.db.models import Count, F
 
 from django.conf import settings
 
@@ -194,12 +194,8 @@ class PollImageView(FormView):
         random_pk = None
 
         if settings.POLL_USE_BETAVARIATE:
-            pks = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll")).order_by("num_polls")
-
-            max_polls = getattr(settings, "LIMIT_NUM_POLLS", None)
-            if max_polls:
-                pks = pks.filter(num_polls__lt=max_polls)
-
+            pks = Image.objects.filter(image_dataset__dataset_active=True).annotate(num_polls=Count("poll"))
+            pks = pks.filter(num_polls__lt=F("image_dataset__dataset_max_polls")).order_by("num_polls")
             pks = pks.values_list('pk', flat=True)
             if len(pks) == 0:
                 #raise Http404("No polls available yet. Please return later")
@@ -208,7 +204,9 @@ class PollImageView(FormView):
                 random_pk = pks[round(random.betavariate(settings.BETAVARIATE_ALPHA, settings.BETAVARIATE_BETA) * (len(pks)-1))]
                 #random_pk = pks[round(random.triangular(0, len(pks)-1, 0))]
         else:
-            pks = Image.objects.filter(image_dataset__dataset_active=True).values_list('pk', flat=True)
+            pks = Image.objects.filter(image_dataset__dataset_active=True)
+            pks = pks.filter(num_polls__lt=F("image_dataset__dataset_max_polls")).order_by("num_polls")
+            pks = pks.values_list('pk', flat=True)
             if len(pks) == 0:
                 #raise Http404("No polls available yet. Please return later")
                 random_pk = None

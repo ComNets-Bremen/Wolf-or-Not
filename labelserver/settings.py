@@ -154,11 +154,6 @@ POLL_USE_BETAVARIATE = True # Use the betavariate. Otherwise use uniform
 BETAVARIATE_ALPHA    = 0.6  # Alpha for the betavariate
 BETAVARIATE_BETA     = 1    # Beta for the betavariate
 
-# Limit the maximum number of polls per images a hard boundary
-# Remove for no limits
-LIMIT_NUM_POLLS      = 3
-
-
 # Overwrite settings by local ones (if available)
 try:
     from .settings_local import *
