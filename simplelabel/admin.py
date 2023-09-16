@@ -20,8 +20,8 @@ class PropertyAdmin(admin.ModelAdmin):
 
 @admin.register(Dataset)
 class DatasetAdmin(admin.ModelAdmin):
-    list_display = ('dataset_name', 'dataset_active', 'get_number_images', 'dataset_max_polls')
-    readonly_fields = ('get_number_images',)
+    list_display = ('dataset_name', 'dataset_active', 'get_number_images', 'dataset_max_polls', 'get_number_polls', 'get_percentage_done')
+    readonly_fields = ('get_number_images', 'get_number_polls', 'get_percentage_done')
 
 
 @admin.register(Poll)

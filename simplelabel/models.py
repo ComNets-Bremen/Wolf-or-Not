@@ -49,6 +49,14 @@ class Dataset(models.Model):
         return Image.objects.filter(image_dataset=self).count()
     get_number_images.short_description = "Number of images"
 
+    def get_number_polls(self):
+        return Poll.objects.filter(poll_image__image_dataset=self).count()
+    get_number_polls.short_description = "Number of polls"
+
+    def get_percentage_done(self):
+        return f"{round((self.get_number_polls() / (self.dataset_max_polls * self.get_number_images()))*100.0)} %"
+    get_percentage_done.short_description = "Percentage done"
+
     def __str__(self):
         return self.dataset_name + " " + (u"✓" if self.dataset_active else u"✗")
 
