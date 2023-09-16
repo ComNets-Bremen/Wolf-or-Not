@@ -63,6 +63,31 @@
 </table>
     </div>
 
+    <div class="container">
+        <h2 class="display-7 fw-bold">Active Datasets</h2>
+        <table class="table table-bordered">
+  <thead>
+    <tr>
+      <th scope="col">Name</th>
+      <th scope="col">Number of images</th>
+      <th scope="col">Requested number of polls per image</th>
+      <th scope="col">Percentage done</th>
+    </tr>
+  </thead>
+  <tbody>
+      {% for entry in datasets %}
+    <tr>
+        <td>{{ entry.dataset_name }}</td>
+      <td>{{ entry.get_number_images }}</td>
+      <td>{{ entry.dataset_max_polls }}</td>
+      <td>{{ entry.get_percentage_done }}&percnt;</td>
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+    </div>
+
 
     <div class="container">
         <h2 class="display-7 fw-bold">Frequencies</h2>

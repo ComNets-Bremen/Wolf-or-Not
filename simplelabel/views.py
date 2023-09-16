@@ -84,6 +84,7 @@ def get_statistics(request):
 
     data = {
             "image_count" : Image.objects.filter(image_dataset__dataset_active=True).count(),
+            "datasets"    : Dataset.objects.filter(dataset_active=True),
             "poll_count" : Poll.objects.filter(poll_image__image_dataset__dataset_active=True).count(),
             "mean_count_image" : round(np.mean(values),2) if len(values) else 0,
             "max_count_image" : np.max(values) if len(values) else 0,
