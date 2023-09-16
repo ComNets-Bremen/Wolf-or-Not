@@ -54,7 +54,7 @@ class Dataset(models.Model):
     get_number_polls.short_description = "Number of polls"
 
     def get_percentage_done(self):
-        return (self.get_number_polls() / (self.dataset_max_polls * self.get_number_images()))*100.0
+        return round((self.get_number_polls() / (self.dataset_max_polls * self.get_number_images()))*100.0)
     get_percentage_done.short_description = "Percentage done"
 
     def __str__(self):
