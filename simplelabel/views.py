@@ -224,6 +224,7 @@ class PollImageView(FormView):
         classes = Class.objects.filter(class_is_visible=True)
         context["classes"] = classes
         context["image"] = random_img
+        context["percent_done"] = Dataset.get_average_percentage_done()
         return context
 
     def get_success_url(self):

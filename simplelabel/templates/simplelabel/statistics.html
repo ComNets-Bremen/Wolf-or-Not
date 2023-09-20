@@ -80,7 +80,7 @@
         <td>{{ entry.dataset_name }}</td>
       <td>{{ entry.get_number_images }}</td>
       <td>{{ entry.dataset_max_polls }}</td>
-      <td>{{ entry.get_percentage_done }}&percnt;</td>
+      <td>{{ entry.get_percentage_done|floatformat }}&percnt;</td>
     </tr>
     {% endfor %}
 

@@ -42,9 +42,12 @@
         </div>
 
       </form>
+        <p class="text-muted">
         {% if user.is_authenticated %}
-        <p> <a href="{{ image.get_image_detail_url }}">Details</a></p>
+        <a href="{{ image.get_image_detail_url }}">Details</a> &centerdot;
         {% endif %}
+        {{ percent_done|floatformat }} &percnt; done
+        </p>
 
       </div>
     </div>

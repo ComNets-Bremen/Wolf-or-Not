@@ -55,12 +55,20 @@ class Dataset(models.Model):
 
     def get_percentage_done(self):
         if self.dataset_max_polls > 0 and self.get_number_images() > 0:
-            return round((self.get_number_polls() / (self.dataset_max_polls * self.get_number_images()))*100.0)
+            return (self.get_number_polls() / (self.dataset_max_polls * self.get_number_images()))*100.0
         return 0.0
     get_percentage_done.short_description = "Percentage done"
 
     def __str__(self):
         return self.dataset_name + " " + (u"✓" if self.dataset_active else u"✗")
+
+    @staticmethod
+    def get_average_percentage_done():
+        ds = Dataset.objects.filter(dataset_active=True).all()
+        s = 0.0
+        for d in ds:
+            s += d.get_percentage_done()
+        return s / len(ds)
 
 class Image(models.Model):
     image           = models.ImageField(
