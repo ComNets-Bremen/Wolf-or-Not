@@ -141,3 +141,6 @@ bin
 
 images/**
 !images/info.txt
+
+static_production
+
