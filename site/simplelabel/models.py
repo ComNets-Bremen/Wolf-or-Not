@@ -68,7 +68,9 @@ class Dataset(models.Model):
         s = 0.0
         for d in ds:
             s += d.get_percentage_done()
-        return s / len(ds)
+        if len(ds):
+            return s / len(ds)
+        return 0
 
 class Image(models.Model):
     image           = models.ImageField(
