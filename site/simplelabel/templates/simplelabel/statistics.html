@@ -3,114 +3,144 @@
 {% load static %}
 {% load attr_extras %}
 
-
 {% block main %}
-    <div class="p-5 mb-2 bg-light rounded-3 text-center">
-      <div class="container">
-        <h1 class="display-5 fw-bold">Statistics</h1>
-        <p class="col">
-        This webpages gives a basic overview of the current status of the project: <br>
-        How many images are currently being analyzed? What is the percentage of images already labeled? How many polls are stored?
-        </p>
-
-      </div>
+    <div class="px-4 py-5 mb-5 text-center bg-light rounded shadow-sm">
+        <div class="container">
+            <h1 class="display-4 font-weight-bold">Project Statistics</h1>
+            <p class="lead text-muted col-lg-8 mx-auto">
+                This dashboard gives a basic overview of the current status of the project: How many images are currently being analyzed, the labeling progress, and active dataset information.
+            </p>
+        </div>
     </div>
 
-    <div class="container">
-        <h2 class="display-7 fw-bold">General Statistics</h2>
-        <table class="table table-responsive">
-  <thead>
-    <tr>
-      <th scope="col">Key</th>
-      <th scope="col">Value</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Number of images in database</td>
-      <td>{{ image_count }}</td>
-    </tr>
-    <tr>
-      <td>Number of polls in database</td>
-      <td>{{ poll_count }}</td>
-    </tr>
-    <tr>
-      <td >Mean number of polls per Image</td>
-      <td>{{ mean_count_image }}</td>
-    </tr>
-    <tr>
-      <td >Median number of polls per Image</td>
-      <td>{{ median_count_image }}</td>
-    </tr>
-    <tr>
-      <td >Min number of polls per Image</td>
-      <td>{{ min_count_image }}</td>
-    </tr>
-    <tr>
-      <td >Max number of polls per Image</td>
-      <td>{{ max_count_image }}</td>
-    </tr>
-    <tr>
-      <td >Percentage of images with at least two polls</td>
-      <td>{{ percent_done_2 }}&percnt;</td>
-    </tr>
-    <tr>
-      <td >Percentage of images with at least three polls</td>
-      <td>{{ percent_done_3 }}&percnt;</td>
-    </tr>
-
-  </tbody>
-</table>
+    <div class="container mb-5">
+        <div class="row text-center">
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body py-4">
+                        <h2 class="display-4 text-primary font-weight-bold">{{ image_count }}</h2>
+                        <p class="lead text-muted mb-0">Total Images</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body py-4">
+                        <h2 class="display-4 text-success font-weight-bold">{{ poll_count }}</h2>
+                        <p class="lead text-muted mb-0">Total Polls</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card shadow-sm h-100 border-0">
+                    <div class="card-body py-4">
+                        <h2 class="display-4 text-info font-weight-bold">{{ percent_done_3 }}&percnt;</h2>
+                        <p class="lead text-muted mb-0">Images with &ge; 3 Polls</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
-    <div class="container">
-        <h2 class="display-7 fw-bold">Active Datasets</h2>
-        <table class="table table-responsive">
-  <thead>
-    <tr>
-      <th scope="col">Name</th>
-      <th scope="col">Number of images</th>
-      <th scope="col">Requested number of polls per image</th>
-      <th scope="col">Percentage done</th>
-    </tr>
-  </thead>
-  <tbody>
-      {% for entry in datasets %}
-    <tr>
-        <td>{{ entry.dataset_name }}</td>
-      <td>{{ entry.get_number_images }}</td>
-      <td>{{ entry.dataset_max_polls }}</td>
-      <td>{{ entry.get_percentage_done|floatformat }}&percnt;</td>
-    </tr>
-    {% endfor %}
-
-  </tbody>
-</table>
+    <div class="container mb-5">
+        <h3 class="font-weight-bold mb-4 pb-2 border-bottom">Detailed Metrics</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-borderless mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" class="pl-4">Metric</th>
+                                <th scope="col" class="text-right pr-4">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="pl-4">Mean number of polls per image</td>
+                                <td class="text-right pr-4 font-weight-bold">{{ mean_count_image }}</td>
+                            </tr>
+                            <tr>
+                                <td class="pl-4">Median number of polls per image</td>
+                                <td class="text-right pr-4 font-weight-bold">{{ median_count_image }}</td>
+                            </tr>
+                            <tr>
+                                <td class="pl-4">Min number of polls per image</td>
+                                <td class="text-right pr-4 font-weight-bold">{{ min_count_image }}</td>
+                            </tr>
+                            <tr>
+                                <td class="pl-4 border-bottom">Max number of polls per image</td>
+                                <td class="text-right pr-4 font-weight-bold border-bottom">{{ max_count_image }}</td>
+                            </tr>
+                            <tr>
+                                <td class="pl-4 text-muted">Percentage of images with at least two polls</td>
+                                <td class="text-right pr-4 text-muted">{{ percent_done_2 }}&percnt;</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-
-    <div class="container">
-        <h2 class="display-7 fw-bold">Frequencies</h2>
-        <table class="table table-responsive">
-  <thead>
-    <tr>
-      <th scope="col">Frequency</th>
-      <th scope="col">Count</th>
-      <th scope="col">Percentage</th>
-    </tr>
-  </thead>
-  <tbody>
-      {% for entry in freq_list_dict %}
-    <tr>
-        <td>{{ entry.number_polls }}</td>
-      <td>{{ entry.number_images }}</td>
-      <td>{{ entry.percentage_images}}&percnt;</td>
-    </tr>
-    {% endfor %}
-
-  </tbody>
-</table>
+    <div class="container mb-5">
+        <h3 class="font-weight-bold mb-4 pb-2 border-bottom">Active Datasets</h3>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" class="pl-4">Dataset Name</th>
+                                <th scope="col" class="text-center">Number of Images</th>
+                                <th scope="col" class="text-center">Requested Polls / Image</th>
+                                <th scope="col" class="text-right pr-4">Percentage Done</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in datasets %}
+                            <tr>
+                                <td class="pl-4 font-weight-bold align-middle">{{ entry.dataset_name }}</td>
+                                <td class="text-center align-middle">{{ entry.get_number_images }}</td>
+                                <td class="text-center align-middle">{{ entry.dataset_max_polls }}</td>
+                                <td class="text-right pr-4 align-middle">
+                                    <span class="badge badge-success p-2" style="font-size: 0.9rem;">{{ entry.get_percentage_done|floatformat }}&percnt;</span>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 
-
+    <div class="container mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4 pb-2 border-bottom">
+            <h3 class="font-weight-bold mb-0">Poll Frequencies</h3>
+        </div>
+        <div class="card shadow-sm border-0">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover table-striped mb-0">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col" class="pl-4">Frequency (Number of Polls)</th>
+                                <th scope="col" class="text-center">Image Count</th>
+                                <th scope="col" class="text-right pr-4">Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in freq_list_dict %}
+                            <tr>
+                                <td class="pl-4 align-middle">{{ entry.number_polls }}</td>
+                                <td class="text-center align-middle">{{ entry.number_images }}</td>
+                                <td class="text-right pr-4 align-middle">{{ entry.percentage_images }}&percnt;</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
