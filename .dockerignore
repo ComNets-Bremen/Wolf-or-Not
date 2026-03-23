@@ -1,9 +1,8 @@
 .git
 __pycache__
 *.pyc
-.env
 db.sqlite3
 venv
 .venv
-static_production
-images/**
+site/static_production
+site/data

@@ -1,11 +1,15 @@
 [project]
 name = "wolf-or-not"
 version = "0.1.0"
-description = "Add your description here"
+description = "A image labeling service"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
     "django>=6.0.3",
+    "django-allow-cidr>=0.8.0",
+    "gunicorn>=25.1.0",
     "numpy>=2.4.3",
     "pillow>=12.1.1",
+    "python-decouple>=3.8",
+    "whitenoise>=6.12.0",
 ]

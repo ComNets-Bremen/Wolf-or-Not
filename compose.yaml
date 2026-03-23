@@ -1,0 +1,13 @@
+services:
+  web:
+    build: .
+    container_name: wolf-or-not
+    restart: always
+    env_file: .env
+    volumes:
+      - data:/app/data
+    ports:
+      - "8000:8000"
+
+volumes:
+  data:
