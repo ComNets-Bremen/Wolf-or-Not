@@ -103,8 +103,10 @@ Running on a real webserver
 ===========================
 
 The testserver should never be use in production environments. The [Django
-documnetation](https://docs.djangoproject.com/en/4.1/howto/deployment/wsgi/modwsgi/)
+documentation](https://docs.djangoproject.com/en/6.0/howto/deployment/wsgi/modwsgi/)
 explains how to set up django using `mod_wsgi` on an apache webserver.
+
+You should also find everything to deploy this tool using docker compose.
 
 **Security notice** Please make sure you set your own key as mentioned in the
 security sections of this document.
@@ -117,7 +119,7 @@ Publications
 License
 =======
 
-Jens Dede, Sustainable Communication Networks, University of Bremen, jd@comnets.uni-bremen.de, 2023
+Jens Dede, Sustainable Communication Networks, University of Bremen, jd@comnets.uni-bremen.de, 2026
 
 This code is licensed under the GPLv3. You can find it [here](LICENSE).
 
