@@ -3,22 +3,100 @@
 {% load static %}
 {% load attr_extras %}
 
+{% block title %}Upload Images - Wolf or Not{% endblock %}
+
 {% block main %}
+<div class="container my-5">
+    <div class="p-4 p-md-5 mb-4 bg-light rounded-3 shadow-sm">
+        <div class="container-fluid py-2">
+            <h1 class="display-5 fw-bold text-center mb-4">Upload New Dataset</h1>
+            
+            <div class="alert alert-primary shadow-sm" role="alert" id="uploadStatus" style="display:none;">
+                <div class="d-flex align-items-center">
+                    <div class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></div>
+                    <span id="statusText">Uploading images, please wait...</span>
+                </div>
+            </div>
 
-    <div class="p-5 mb-4 rounded-3 text-center">
-      <div class="container-fluid py-5">
-      <div class="alert alert-primary" role="alert" id="uploadStatus" style="display:none;">
-      </div>
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    {{ form.media }}
+                    <form method="post" enctype="multipart/form-data" action="" id="uploadForm" class="bg-white p-4 rounded shadow-sm border">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3 custom-form-container">
+                            {{ form.as_p }}
+                        </div>
 
-{{ form.media }}
-<form method="post" enctype="multipart/form-data" action="" id="uploadForm">
-      <div class="form-group">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <input type="submit" value="Submit" class="btn btn-success">
-      </div>
-</form>
-
-      </div>
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                            <a href="{% url 'get_statistics' %}" class="btn btn-outline-secondary me-md-2">Cancel</a>
+                            <button type="submit" class="btn btn-success px-5 fw-bold">
+                                <i class="bi bi-cloud-arrow-up me-1"></i> Start Upload
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-center">
+                <p class="text-muted small">
+                    <i class="bi bi-info-circle me-1"></i> 
+                    Supported formats: .jpg, .png. Maximum file size per image: 5MB.
+                </p>
+            </div>
+        </div>
     </div>
+</div>
+
+<style>
+    .custom-form-container p {
+        margin-bottom: 1.5rem;
+    }
+    
+    .custom-form-container label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #495057;
+    }
+    
+    .custom-form-container input[type="text"],
+    .custom-form-container input[type="file"],
+    .custom-form-container select,
+    .custom-form-container textarea {
+        display: block;
+        width: 100%;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        font-weight: 400;
+        line-height: 1.5;
+        color: #212529;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        appearance: none;
+        border-radius: 0.375rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+
+    .custom-form-container input:focus {
+        border-color: #86b7fe;
+        outline: 0;
+        box-shadow: 0 0 0 0.25rem rgba(13,110,253,.25);
+    }
+
+    .custom-form-container .helptext {
+        display: block;
+        margin-top: 0.25rem;
+        font-size: 0.875em;
+        color: #6c757d;
+    }
+</style>
+
+<script>
+    document.getElementById('uploadForm').onsubmit = function() {
+        document.getElementById('uploadStatus').style.display = 'block';
+        this.querySelector('button[type="submit"]').disabled = true;
+    };
+</script>
 {% endblock %}

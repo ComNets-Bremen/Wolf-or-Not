@@ -4,17 +4,15 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Wolf or Not - Image Classification Project by ComNets Bremen">
     <title>{% block title %}Wolf or Not{% endblock %}</title>
 
     <link href="{% static "bootstrap/css/bootstrap.min.css" %}" rel="stylesheet">
     
-    <link href="{% static "custom/styles.css" %}" rel="stylesheet">
+    <link href="{% static "bootstrap-icons/bootstrap-icons.css" %}" rel="stylesheet">
     
-    <script defer src="{% static "fontawesome/js/brands.js" %}"></script>
-    <script defer src="{% static "fontawesome/js/solid.js" %}"></script>
-    <script defer src="{% static "fontawesome/js/fontawesome.js" %}"></script>
+    <link href="{% static "custom/styles.css" %}" rel="stylesheet">
     
     <link rel="icon" type="image/png" sizes="32x32" href="{% static "img/favicon/favicon-32x32.png" %}">
     <link rel="icon" type="image/png" sizes="16x16" href="{% static "img/favicon/favicon-16x16.png" %}">
@@ -31,6 +29,7 @@
             width: 100%;
             text-align: left;
             cursor: pointer;
+            padding: 0.25rem 1rem; /* Padding für bessere Klickbarkeit im Dropdown */
         }
     </style>
   </head>
@@ -39,17 +38,17 @@
 
     <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light shadow-sm">
         <div class="container">
-            <a class="navbar-brand font-weight-bold d-flex align-items-center" href="{% url "poll" %}">
-                <img src="{% static "img/logo-30x30.png" %}" width="30" height="30" class="d-inline-block align-top mr-2" alt="Logo">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{% url "poll" %}">
+                <img src="{% static "img/logo-30x30.png" %}" width="30" height="30" class="d-inline-block align-top me-2" alt="Logo">
                 Wolf or Not
             </a>
             
-            <button class="navbar-toggler border-0" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav mr-auto">
+                <ul class="navbar-nav me-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="{% url "index" %}">Home</a>
                     </li>
@@ -63,30 +62,31 @@
 
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                             Admin
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow-sm border-0" aria-labelledby="navbarDropdown">
-                            <a class="dropdown-item" href="{% url "get_statistics" %}">Statistics</a>
+                        <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0" aria-labelledby="navbarDropdown">
+                            <li><a class="dropdown-item" href="{% url "get_statistics" %}">Statistics</a></li>
                             
                             {% if user.is_authenticated %}
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url "admin:index" %}" target="_blank">Admin overview</a>
-                                <a class="dropdown-item" href="{% url "upload_images" %}">Upload images</a>
-                                <a class="dropdown-item" href="{% url "download_results" %}">Download results</a>
-                                <div class="dropdown-divider"></div>
-                                
-                                <form method="post" action="{% url "admin:logout" %}" class="m-0 p-0">
-                                    {% csrf_token %}
-                                    <button type="submit" class="dropdown-item text-danger btn-logout">
-                                        Logout
-                                    </button>
-                                </form>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url "admin:index" %}" target="_blank">Admin overview</a></li>
+                                <li><a class="dropdown-item" href="{% url "upload_images" %}">Upload images</a></li>
+                                <li><a class="dropdown-item" href="{% url "download_results" %}">Download results</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form method="post" action="{% url "admin:logout" %}" class="m-0 p-0">
+                                        {% csrf_token %}
+                                        <button type="submit" class="dropdown-item text-danger btn-logout">
+                                            Logout
+                                        </button>
+                                    </form>
+                                </li>
                             {% else %}
-                                <div class="dropdown-divider"></div>
-                                <a class="dropdown-item" href="{% url "admin:login" %}">Login</a>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item" href="{% url "admin:login" %}">Login</a></li>
                             {% endif %}
-                        </div>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -101,16 +101,13 @@
         <div class="container text-center">
             <span class="text-muted">
                 This service is provided by <a href="https://comnets-bremen.de" target="_blank">
-                ComNets Bremen <i class="fa-solid fa-globe"></i></a>
-                <a href="https://comnets-bremen.github.io/" target="_blank" class="ml-2"><i class="fa-brands fa-github"></i></a>
-                <a href="https://www.youtube.com/comnetsbremen" target="_blank" class="ml-2"><i class="fa-brands fa-youtube"></i></a>
+                ComNets Bremen <i class="bi bi-globe"></i></a> <a href="https://comnets-bremen.github.io/" target="_blank" class="ms-2"><i class="bi bi-github"></i></a>
+                <a href="https://www.youtube.com/comnetsbremen" target="_blank" class="ms-2"><i class="bi bi-youtube"></i></a>
             </span>
         </div>
     </footer>
 
-    <script src="{% static "js/jquery-3.6.1.min.js" %}"></script>
-    <script src="{% static "js/popper.min.js" %}"></script>
-    <script src="{% static "bootstrap/js/bootstrap.min.js" %}"></script>
+    <script src="{% static "bootstrap/js/bootstrap.bundle.min.js" %}"></script>
 
   </body>
 </html>

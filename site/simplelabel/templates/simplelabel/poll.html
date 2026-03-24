@@ -3,52 +3,110 @@
 {% load static %}
 {% load attr_extras %}
 
+{% block title %}Identify - Wolf or Not{% endblock %}
+
 {% block main %}
-    <div class="p-5 mb-4 bg-light rounded-3 text-center">
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">What do you see?</h1>
+<div class="container my-4">
+    <div class="p-4 p-md-5 mb-4 bg-light rounded-3 text-center shadow-sm">
+        <div class="container-fluid">
+            <h1 class="display-5 fw-bold mb-4">What do you see?</h1>
 
-        <div class="col">
-                <img src="{{ image.get_image_url }}" class="img-fluid" alt="Image to check">
-        </div>
-
-
-        <form method="post">
-        {% csrf_token %}
-
-        {% if form.errors %}
-        <p class="mt-5 mb-3 text-muted">{{ form.errors }}</p>
-        {% endif %}
-
-        <div class="col">
-            <div class="form-check form-check-inline">
-
-        {% for field in form %}
-        {% for prop in field %}
-
-        {{ prop }}
-
-        {% endfor %}
-
-        {% endfor %}
+            <div class="row justify-content-center mb-4">
+                <div class="col-lg-10">
+                    <img src="{{ image.get_image_url }}" class="img-fluid rounded shadow-sm border" style="max-height: 65vh;" alt="Image to check">
+                </div>
             </div>
+
+            <form method="post">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                <div class="alert alert-danger d-inline-block mt-3" role="alert">
+                    {{ form.errors }}
+                </div>
+                {% endif %}
+
+                <div class="row justify-content-center mb-4">
+                    <div class="col-12">
+                        <div class="d-flex flex-wrap justify-content-center gap-3 custom-checkbox-group">
+                            {% for field in form %}
+                                {% for prop in field %}
+                                    <div class="form-check form-check-inline m-0">
+                                        {{ prop }}
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <input type="hidden" name="image_uuid" value="{{ image.image_uuid }}">
+
+                <div class="row justify-content-center mb-4">
+                    <div class="col-12 d-flex flex-wrap justify-content-center gap-2">
+                        {% for class in classes %}
+                        <button type="submit" 
+                                class="btn btn-lg fw-bold px-4 py-2" 
+                                style="background-color: {{ class.class_color }} !important; color: {{ class.get_class_font_color }} !important; border: none;" 
+                                name="submit_{{ class.class_id }}" 
+                                value="{{ class.class_name }}">
+                            {{ class.class_name }}
+                        </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            </form>
+
+            <div class="mt-4 pt-3 border-top">
+                <p class="text-muted small">
+                    {% if user.is_authenticated %}
+                    <a href="{{ image.get_image_detail_url }}" class="text-decoration-none me-2">
+                        <i class="bi bi-info-circle"></i> Details
+                    </a> 
+                    <span class="text-secondary">&bull;</span>
+                    {% endif %}
+                    <span class="ms-2">{{ percent_done|floatformat }}% done</span>
+                </p>
+            </div>
+
         </div>
-
-        <input type="hidden" name="image_uuid" value="{{ image.image_uuid }}">
-        <div class="col">
-        {% for class in classes %}
-        <input type="submit" class="btn btn-lg btn-primary" style="background-color: {{ class.class_color }} !important; color: {{class.get_class_font_color}};" name="submit_{{ class.class_id }}" value="{{ class.class_name }}">
-        {% endfor %}
-        </div>
-
-      </form>
-        <p class="text-muted">
-        {% if user.is_authenticated %}
-        <a href="{{ image.get_image_detail_url }}">Details</a> &centerdot;
-        {% endif %}
-        {{ percent_done|floatformat }} &percnt; done
-        </p>
-
-      </div>
     </div>
+</div>
+
+<style>
+    /* Styling für Django-Checkboxen in Bootstrap 5 */
+    .custom-checkbox-group input[type="checkbox"] {
+        width: 1.2em;
+        height: 1.2em;
+        margin-right: 0.5rem;
+        cursor: pointer;
+        vertical-align: middle;
+        appearance: none;
+        background-color: #fff;
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: contain;
+        border: 1px solid rgba(0,0,0,.25);
+        border-radius: 0.25em;
+        display: inline-block;
+    }
+
+    .custom-checkbox-group input[type="checkbox"]:checked {
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+    }
+
+    .custom-checkbox-group label {
+        cursor: pointer;
+        vertical-align: middle;
+    }
+
+    /* Hover Effekt für die Klassen-Buttons */
+    .btn-lg:hover {
+        filter: brightness(0.9);
+        transform: translateY(-1px);
+        transition: all 0.2s;
+    }
+</style>
 {% endblock %}

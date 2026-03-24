@@ -1,38 +1,27 @@
-    /* Sticky footer styles
-    -------------------------------------------------- */
-    html {
-      position: relative;
-      min-height: 100%;
-    }
-    body {
-      /* Margin bottom by footer height */
-      margin-bottom: 60px;
-    }
+html, body {
+  height: 100%;
+}
 
-    .footer {
-      position: fixed;
-      bottom: 0;
-      width: 100%;
-      /* Set the fixed height of the footer here */
-      height: 60px;
-      line-height: 60px; /* Vertically center the text there */
-    }
+body {
+  display: flex;
+  flex-direction: column;
+}
 
-    .footer a {
-      text-decoration: none;
-    }
+main {
+  flex: 1 0 auto;
+}
 
+.footer {
+  flex-shrink: 0;
+  width: 100%;
+  padding: 15px 0; 
+}
 
-    /* Custom page CSS
-    -------------------------------------------------- */
-    /* Not required for template or sticky footer method. */
+.footer a {
+  text-decoration: none;
+}
 
-/*
-    body > .container {
-      padding: 60px 15px 0;
-    }
-*/
-    .footer > .container {
-      padding-right: 15px;
-      padding-left: 15px;
-    }
+.footer > .container {
+  padding-right: 15px;
+  padding-left: 15px;
+}

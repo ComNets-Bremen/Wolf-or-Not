@@ -3,17 +3,31 @@
 {% load static %}
 {% load attr_extras %}
 
+{% block title %}No images available - Wolf or Not{% endblock %}
 
 {% block main %}
-    <div class="p-5 mb-4 bg-light rounded-3 text-center">
-      <div class="container-fluid py-5">
-        <h1 class="display-5 fw-bold">No more images available</h1>
-        <p class="col">
-        You and the other participants did a good job! Thank you for contributing. Right now, there are no more images available.<br>
-        Please return later to check if we have new wolves (or not?) for you.
-        </p>
-
-      </div>
+<div class="container my-5">
+    <div class="p-5 mb-4 bg-light rounded-3 text-center shadow-sm">
+        <div class="container-fluid py-5">
+            <i class="bi bi-check2-circle display-1 text-success mb-4"></i>
+            
+            <h1 class="display-5 fw-bold">No more images available</h1>
+            
+            <div class="col-lg-8 mx-auto">
+                <p class="lead mt-3">
+                    You and the other participants did a great job! Thank you for contributing. 
+                    Right now, there are no more images available for classification.
+                </p>
+                <hr class="my-4 mx-auto" style="max-width: 100px;">
+                <p class="text-muted">
+                    Please return later to check if we have uploaded new images for you to identify.
+                </p>
+                
+                <div class="mt-5">
+                    <a href="{% url 'index' %}" class="btn btn-outline-primary px-4">Back to Home</a>
+                </div>
+            </div>
+        </div>
     </div>
-
+</div>
 {% endblock %}

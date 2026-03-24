@@ -3,50 +3,88 @@
 {% load static %}
 {% load attr_extras %}
 
-{% block main %}
-    <div class="p-5 mb-4 bg-light rounded-3 text-center">
-      <div class="container">
-        <h1 class="display-5 fw-bold">Image Details</h1>
+{% block title %}Image Details - {{ object.image_original_name }}{% endblock %}
 
-        <div class="col">
-                <img src="{{ object.get_image_url }}" class="img-fluid" alt="Image">
+{% block main %}
+<div class="container my-5">
+    <div class="p-4 p-md-5 mb-4 bg-light rounded-3 shadow-sm">
+        <div class="container-fluid text-center">
+            <h1 class="display-5 fw-bold mb-4">Image Details</h1>
+
+            <div class="row justify-content-center mb-5">
+                <div class="col-lg-10">
+                    <div class="card shadow-sm border-0">
+                        <div class="card-body p-2 bg-white rounded">
+                            <img src="{{ object.get_image_url }}" class="img-fluid rounded" alt="Detail view">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row justify-content-center">
+                <div class="col-lg-10 text-start">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body p-0">
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th scope="col" class="ps-4">Property</th>
+                                            <th scope="col" class="ps-4">Value</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="ps-4 fw-bold">Image UUID</td>
+                                            <td class="ps-4 text-muted font-monospace small">{{ object.image_uuid }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold">Original Name</td>
+                                            <td class="ps-4">{{ object.image_original_name }}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold">Dataset</td>
+                                            <td class="ps-4">
+                                                <span class="badge bg-secondary">{{ object.image_dataset.dataset_name }}</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold">Resolution</td>
+                                            <td class="ps-4">{{ object.image_width }} &times; {{ object.image_height }} px</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold align-middle">Scaled Image</td>
+                                            <td class="ps-4">
+                                                <a href="{{ object.get_image_url }}" class="btn btn-sm btn-outline-primary" download>
+                                                    <i class="bi bi-download me-1"></i> Download
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="ps-4 fw-bold align-middle">Original Image</td>
+                                            <td class="ps-4">
+                                                <a href="{{ object.get_original_image_url }}" class="btn btn-sm btn-outline-primary" download>
+                                                    <i class="bi bi-file-earmark-arrow-down me-1"></i> Download (Full Res)
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-between">
+                        <button onclick="history.back()" class="btn btn-secondary">
+                            <i class="bi bi-arrow-left me-1"></i> Back
+                        </button>
+                        <a href="{% url 'poll' %}" class="btn btn-primary">
+                            Next Image <i class="bi bi-arrow-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-      <div class="container">
-        <table class="table table-bordered">
-          <thead>
-            <tr>
-              <th scope="col">Key</th>
-              <th scope="col">Value</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Image UUID</td>
-              <td>{{ object.image_uuid }}</td>
-            </tr>
-            <tr>
-              <td>Original name</td>
-              <td>{{ object.image_original_name }}</td>
-            </tr>
-            <tr>
-              <td>Dataset</td>
-              <td>{{ object.image_dataset.dataset_name }}</td>
-            </tr>
-            <tr>
-              <td>Size</td>
-              <td>{{ object.image_width }} x {{ object.image_height }}</td>
-            </tr>
-            <tr>
-              <td>Scaled image</td>
-              <td><a href="{{ object.get_image_url }}">download</a></td>
-            </tr>
-            <tr>
-              <td>Original image</td>
-              <td><a href="{{ object.get_original_image_url }}">download</a></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
     </div>
+</div>
 {% endblock %}
