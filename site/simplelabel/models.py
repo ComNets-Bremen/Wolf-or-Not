@@ -27,6 +27,12 @@ class Class(models.Model):
             # white
             return "#FFFFFF"
 
+    def get_class_background_color(self):
+        if self.class_color.startswith("#"):
+            return self.class_color
+        else:
+            return f"#{self.class_color}"
+
     class Meta:
         ordering = ("class_id",)
 
@@ -120,7 +126,7 @@ class Poll(models.Model):
     poll_property=models.ManyToManyField("Property", blank=True)
 
     def __str__(self):
-        return "Poll on image " + str(self.poll_image)
+        return f"Poll on image {self.poll_image} -> {self.poll_class.first()}"
 
 # API Keys for direct data access
 

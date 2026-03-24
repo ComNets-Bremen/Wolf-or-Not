@@ -47,7 +47,7 @@
                         {% for class in classes %}
                         <button type="submit" 
                                 class="btn btn-lg fw-bold px-4 py-2" 
-                                style="background-color: {{ class.class_color }} !important; color: {{ class.get_class_font_color }} !important; border: none;" 
+                                style="background-color: {{ class.get_class_background_color }} !important; color: {{ class.get_class_font_color }} !important; border: none;" 
                                 name="submit_{{ class.class_id }}" 
                                 value="{{ class.class_name }}">
                             {{ class.class_name }}
