@@ -5,8 +5,7 @@ This is the repository for the *Wolf or Not* project. This project is developed 
 the department of sustainable communication networks, University of Bremen,
 Germany.
 
-- [comnets.uni-bremen.de](https://comnets.uni-bremen.de/)
-- [ComNets @Twitter](https://twitter.com/ComNetsBremen)
+- [comnets-bremen.de](https://comnets-bremen.de/)
 - [ComNets @Youtube](https://www.youtube.com/comnetsbremen)
 
 
@@ -30,11 +29,10 @@ The main requirements are
 * Pillow
 * numpy
 
-Details from our `pip3 freeze` can be found in
-[requirements.txt](requirements.txt)
+The dependencies are managed using [uv]{https://docs.astral.sh/uv}.
+Details can be found in the [pyproject.toml](pyproject.toml).
 
-Or use the requirements.txt for your venv / pip installation:
-`pip3 install -r requirements.txt`
+You can install the dependencies using `uv sync`.
 
 How to set it up?
 =================
@@ -69,6 +67,17 @@ from the backend
   * Polls: The votes the users did
   * Properties: The additional properties for the system can be configured here.
 
+Docker?
+=======
+
+This repository contains everything to run a docker container:
+
+- Rename the `example-.env` to `.env` and adapt it to your needs
+- `docker compose build`
+- `docker compose up`
+
+Should be sufficient to bring the container up. For real world applications,
+you should consider running this container behind a reverse proxy like [Caddy](https://caddyserver.com/docs/quick-starts/reverse-proxy) or [traefik](https://traefik.io/traefik).
 
 
 Security
@@ -77,12 +86,6 @@ Security
 Before using this code on a public server, you should make yourself familiar
 with some potential security considerations:
 
-- The `settings.py` contains a secret key. You should not use the one in the
-  repository. For each installation, a separate key should be used. You can
-  keep it local by adding it to the `settings_local.py`. A key can be generated
-  using the following command:
-  `$ python -c 'from django.core.management.utils import get_random_secret_key;
-  print(get_random_secret_key())'`
 - The code is not checked for security. Maybe you should walk through it
   and check if running it on your server is safe.
 - Maybe running the system on an isolated server is a good idea?
