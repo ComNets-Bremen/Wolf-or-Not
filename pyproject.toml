@@ -9,7 +9,7 @@ dependencies = [
     "django-allow-cidr>=0.8.0",
     "gunicorn>=25.1.0",
     "numpy>=2.4.3",
-    "pillow>=12.1.1",
+    "pillow>=12.2.0",
     "python-decouple>=3.8",
     "whitenoise>=6.12.0",
 ]
